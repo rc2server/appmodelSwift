@@ -6,6 +6,14 @@
 
 import Foundation
 
-public enum SessionError: Error {
+public enum SessionError: String, Error, Codable {
+	case unknown
 	case fileNotFound
+	case fileVersionMismatch
+	case databaseUpdateFailed
+	case failedToConnectToCompute
+	case invalidRequest
+	case computeEngine
+	case encoding
+	case decoding
 }

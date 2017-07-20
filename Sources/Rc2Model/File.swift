@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct File {
+public struct File: Codable {
 	let id: Int
 	let wspaceId: Int
 	let name: String

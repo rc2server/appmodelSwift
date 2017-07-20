@@ -2,5 +2,5 @@ import XCTest
 @testable import modelTests
 
 XCTMain([
-    testCase(modelTests.allTests),
+    testCase(SessionCommandTests.allTests),
 ])

@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct SessionImage {
+public struct SessionImage: Codable {
 	public let id: Int
 	public let sessionId: Int
 	public let batchId: Int
