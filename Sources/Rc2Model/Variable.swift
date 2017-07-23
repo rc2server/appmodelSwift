@@ -6,7 +6,7 @@
 
 import Foundation
 
-public class Variable: Codable, Equatable, CustomStringConvertible {
+open class Variable: Codable, Equatable, CustomStringConvertible {
 	public let name: String
 	public let length: Int
 	public let type: VariableType

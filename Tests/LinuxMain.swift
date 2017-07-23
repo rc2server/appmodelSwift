@@ -1,6 +1,7 @@
 import XCTest
-@testable import modelTests
+@testable import Rc2ModelTests
 
 XCTMain([
-    testCase(SessionCommandTests.allTests),
+    testCase(SessionCommandTest.allTests),
+    testCase(FileTypeTest.allTests),
 ])
