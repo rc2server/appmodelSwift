@@ -13,6 +13,7 @@ public enum SessionError: String, Error, Codable {
 	case databaseUpdateFailed
 	case failedToConnectToCompute
 	case invalidRequest
+	case permissionDenied
 	case computeEngine
 	case encoding
 	case decoding
