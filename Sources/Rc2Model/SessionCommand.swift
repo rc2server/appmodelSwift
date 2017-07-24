@@ -7,7 +7,7 @@
 import Foundation
 
 /// a command that can be sent to the server
-public enum SessionCommand: Codable {
+public enum SessionCommand: Codable, CustomStringConvertible {
 	private enum CodingKeys: String, CodingKey {
 		case executeFile
 		case execute
@@ -26,6 +26,25 @@ public enum SessionCommand: Codable {
 	case save(SaveParams)
 	case watchVariables(Bool)
 
+	public var description: String {
+		switch self {
+		case .execute(_):
+			return "execute"
+		case .executeFile(let params):
+			return "executeFile \(params.fileId)"
+		case .fileOperation(let op):
+			return "fileOperation \(op.operation.rawValue)"
+		case .getVariable(let varname):
+			return "getVariable \(varname)"
+		case .help(let topic):
+			return "help \(topic)"
+		case .save(let saveinfo):
+			return "save \(saveinfo.fileId)"
+		case .watchVariables(let turnon):
+			return "watchVariables \(turnon)"
+		}
+	}
+	
 	/// Factory function to create a command to execute arbitrary code
 	///
 	/// - Parameters:
