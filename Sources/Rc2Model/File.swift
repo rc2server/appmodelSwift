@@ -14,4 +14,15 @@ public struct File: Codable {
 	let dateCreated: Date
 	let lastModified: Date
 	let fileSize: Int
+	
+	public init(id: Int, wspaceId: Int, name: String, version: Int, dateCreated: Date, lastModified: Date, fileSize: Int)
+	{
+		self.id = id
+		self.name = name
+		self.wspaceId = wspaceId
+		self.version = version
+		self.dateCreated = dateCreated
+		self.lastModified = lastModified
+		self.fileSize = fileSize
+	}
 }
