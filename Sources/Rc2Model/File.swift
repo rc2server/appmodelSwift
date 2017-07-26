@@ -7,13 +7,13 @@
 import Foundation
 
 public struct File: Codable {
-	let id: Int
-	let wspaceId: Int
-	let name: String
-	let version: Int
-	let dateCreated: Date
-	let lastModified: Date
-	let fileSize: Int
+	public let id: Int
+	public let wspaceId: Int
+	public let name: String
+	public let version: Int
+	public let dateCreated: Date
+	public let lastModified: Date
+	public let fileSize: Int
 	
 	public init(id: Int, wspaceId: Int, name: String, version: Int, dateCreated: Date, lastModified: Date, fileSize: Int)
 	{
