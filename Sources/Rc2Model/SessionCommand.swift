@@ -101,7 +101,7 @@ public enum SessionCommand: Codable, CustomStringConvertible {
 	}
 
 	/// Parameters to execute a file
-	public struct ExecuteFileParams: Codable , Equatable {
+	public struct ExecuteFileParams: Codable, Equatable {
 		/// the id of the File to execute
 		public let fileId: Int
 		/// the latest known version of the File. An error will be generated if this does not match the version on the server

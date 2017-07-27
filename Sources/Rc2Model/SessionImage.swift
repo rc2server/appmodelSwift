@@ -15,3 +15,9 @@ public struct SessionImage: Codable {
 	public let dateCreated: Date
 	public let imageData: Data
 }
+
+extension SessionImage: Equatable {
+	public static func == (lhs: SessionImage, rhs: SessionImage) -> Bool {
+		return lhs.id == rhs.id
+	}
+}
