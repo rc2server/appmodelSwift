@@ -91,8 +91,8 @@ public enum SessionResponse: Codable {
 	}
 	
 	public struct ExecuteData: Codable, Equatable {
-		let transactionId: String
-		let source: String
+		public let transactionId: String
+		public let source: String
 		
 		public init(transactionId: String, source: String) {
 			self.transactionId = transactionId
@@ -105,9 +105,9 @@ public enum SessionResponse: Codable {
 	}
 
 	public struct ExecuteFileData: Codable, Equatable {
-		let transactionId: String
-		let fileId: Int
-		let fileVersion: Int
+		public let transactionId: String
+		public let fileId: Int
+		public let fileVersion: Int
 		
 		public init(transactionId: String, fileId: Int, fileVersion: Int) {
 			self.transactionId = transactionId
@@ -121,10 +121,10 @@ public enum SessionResponse: Codable {
 	}
 
 	public struct ExecCompleteData: Codable, Equatable {
-		let transactionId: String
-		let batchId: Int
-		let expectShowOutput: Bool
-		let images: [SessionImage]
+		public let transactionId: String
+		public let batchId: Int
+		public let expectShowOutput: Bool
+		public let images: [SessionImage]
 		
 		public init(transactionId: String, batchId: Int, expectShowOutput: Bool, images: [SessionImage]) {
 			self.transactionId = transactionId
@@ -144,10 +144,10 @@ public enum SessionResponse: Codable {
 			case update
 			case delete
 		}
-		let changeType: FileChangeType
-		let fileId: Int
+		public let changeType: FileChangeType
+		public let fileId: Int
 		/// the file won't be available if it was deleted
-		let file: File?
+		public let file: File?
 		
 		public init(type: FileChangeType, file: File?, fileId: Int) {
 			self.changeType = type
@@ -161,13 +161,13 @@ public enum SessionResponse: Codable {
 	}
 	
 	public struct FileOperationData: Codable, Equatable {
-		let transactionId: String
-		let operation: FileOperation
-		let success: Bool
-		let file: File?
-		let error: SessionError?
+		public let transactionId: String
+		public let operation: FileOperation
+		public let success: Bool
+		public let file: File?
+		public let error: SessionError?
 		
-		var fileIdString: String {
+		public var fileIdString: String {
 			guard let id = file?.id else { return "-" }
 			return String(id)
 		}
@@ -186,8 +186,8 @@ public enum SessionResponse: Codable {
 	}
 	
 	public struct HelpData: Codable, Equatable {
-		let topic: String
-		let items: [String: String]
+		public let topic: String
+		public let items: [String: String]
 		
 		public init(topic: String, items: [String: String]) {
 			self.topic = topic
@@ -200,9 +200,9 @@ public enum SessionResponse: Codable {
 	}
 	
 	public struct ResultsData: Codable, Equatable {
-		let transactionId: String
-		let output: String
-		let isStdErr: Bool
+		public let transactionId: String
+		public let output: String
+		public let isStdErr: Bool
 		
 		public init(transactionId: String, output: String, isError: Bool) {
 			self.transactionId = transactionId
@@ -216,10 +216,10 @@ public enum SessionResponse: Codable {
 	}
 	
 	public struct SaveData: Codable, Equatable {
-		let transactionId: String
-		let success: Bool
-		let file: File?
-		let error: SessionError?
+		public let transactionId: String
+		public let success: Bool
+		public let file: File?
+		public let error: SessionError?
 		
 		public init(transactionId: String, success: Bool, file: File?, error: SessionError?) {
 			self.transactionId = transactionId
@@ -234,9 +234,9 @@ public enum SessionResponse: Codable {
 	}
 	
 	public struct ShowOutputData: Codable, Equatable {
-		let transactionId: String
-		let file: File
-		let fileData: Data
+		public let transactionId: String
+		public let file: File
+		public let fileData: Data
 		
 		public init(transactionid: String, file: File, fileData: Data) {
 			self.transactionId = transactionid
