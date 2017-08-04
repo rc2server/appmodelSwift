@@ -236,9 +236,10 @@ public enum SessionResponse: Codable {
 	public struct ShowOutputData: Codable, Equatable {
 		public let transactionId: String
 		public let file: File
-		public let fileData: Data
+		/// if nil, the client should fetch the file via REST
+		public let fileData: Data?
 		
-		public init(transactionid: String, file: File, fileData: Data) {
+		public init(transactionid: String, file: File, fileData: Data?) {
 			self.transactionId = transactionid
 			self.file = file
 			self.fileData = fileData

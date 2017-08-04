@@ -18,3 +18,12 @@ public enum SessionError: String, Error, Codable {
 	case encoding
 	case decoding
 }
+
+public enum SessionErrorCode: Int, Codable {
+	case unknown = 0
+	case invalidDirectory = 101
+	case createDirectoryFailed = 102
+	case execInvalidInput = 103
+	case execMarkdownFailed = 104
+	case unknownFile = 105
+}
