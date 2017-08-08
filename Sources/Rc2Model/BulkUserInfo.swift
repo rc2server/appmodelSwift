@@ -7,7 +7,9 @@
 import Foundation
 
 public struct BulkUserInfo: Codable {
+	/// the user in question
 	public let user: User
+	/// array of user's projects
 	public let projects: [Project]
 	/// dictionary of workspaces per project, keyed off the projectId
 	public let workspaces: [Int: [Workspace]]

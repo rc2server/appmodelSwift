@@ -9,7 +9,7 @@ import Foundation
 public enum SessionResponse: Codable {
 	case echoExecute(ExecuteData)
 	case echoExecuteFile(ExecuteFileData)
-	case error(SessionError)
+	case error(ErrorData)
 	case execComplete(ExecCompleteData)
 	case fileChanged(FileChangedData)
 	case fileOperation(FileOperationData)
@@ -22,7 +22,7 @@ public enum SessionResponse: Codable {
 	private enum CodingKeys: String, CodingKey {
 		case echoExecute
 		case echoExecuteFile
-		case error
+		case codedError
 		case execComplete
 		case fileChanged
 		case fileOperation
@@ -39,7 +39,7 @@ public enum SessionResponse: Codable {
 			self = .echoExecute(data)
 		} else if let data = try? container.decode(ExecuteFileData.self, forKey: .echoExecuteFile) {
 			self = .echoExecuteFile(data)
-		} else if let data = try? container.decode(SessionError.self, forKey: .error) {
+		} else if let data = try? container.decode(ErrorData.self, forKey: .codedError) {
 			self = .error(data)
 		} else if let data = try? container.decode(ExecCompleteData.self, forKey: .execComplete) {
 			self = .execComplete(data)
@@ -70,7 +70,7 @@ public enum SessionResponse: Codable {
 		case .echoExecuteFile(let data):
 			try container.encode(data, forKey: .echoExecuteFile)
 		case .error(let err):
-			try container.encode(err, forKey: .error)
+			try container.encode(err, forKey: .codedError)
 		case .execComplete(let data):
 			try container.encode(data, forKey: .execComplete)
 		case .fileChanged(let change):
@@ -212,6 +212,20 @@ public enum SessionResponse: Codable {
 		
 		public static func == (lhs: ResultsData, rhs: ResultsData) -> Bool {
 			return lhs.transactionId == rhs.transactionId && lhs.output == rhs.output && lhs.isStdErr == rhs.isStdErr
+		}
+	}
+	
+	public struct ErrorData: Codable, Equatable {
+		public let transactionId: String?
+		public let error: SessionError
+
+		public init(transactionId: String?, error: SessionError) {
+			self.transactionId = transactionId
+			self.error = error
+		}
+		
+		public static func == (lhs: ErrorData, rhs: ErrorData) -> Bool {
+			return lhs.error == rhs.error && lhs.transactionId == rhs.transactionId
 		}
 	}
 	
