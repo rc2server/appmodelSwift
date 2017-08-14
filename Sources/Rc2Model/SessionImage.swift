@@ -14,6 +14,16 @@ public struct SessionImage: Codable {
 	public let title: String?
 	public let dateCreated: Date
 	public let imageData: Data
+	
+	public init(id: Int, sessionId: Int, batchId: Int, name: String, title: String?, dateCreated: Date, imageData: Data) {
+		self.id = id
+		self.sessionId = sessionId
+		self.batchId = batchId
+		self.name = name
+		self.title = title
+		self.dateCreated = dateCreated
+		self.imageData = imageData
+	}
 }
 
 extension SessionImage: Equatable {
