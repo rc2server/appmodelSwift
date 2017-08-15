@@ -7,6 +7,7 @@
 import Foundation
 
 public enum SessionResponse: Codable {
+	case connected(BulkUserInfo)
 	case echoExecute(ExecuteData)
 	case echoExecuteFile(ExecuteFileData)
 	case error(ErrorData)
@@ -20,6 +21,7 @@ public enum SessionResponse: Codable {
 	case variables([Variable])
 	
 	private enum CodingKeys: String, CodingKey {
+		case connected
 		case echoExecute
 		case echoExecuteFile
 		case codedError
@@ -57,6 +59,8 @@ public enum SessionResponse: Codable {
 			self = .showOutput(data)
 		} else if let data = try? container.decode(Array<Variable>.self, forKey: .variables) {
 			self = .variables(data)
+		} else if let data = try? container.decode(BulkUserInfo.self, forKey: .connected) {
+			self = .connected(data)
 		} else {
 			throw SessionError.decoding
 		}
@@ -65,6 +69,8 @@ public enum SessionResponse: Codable {
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
 		switch self {
+		case .connected(let bulkInfo):
+			try container.encode(bulkInfo, forKey: .connected)
 		case .echoExecute(let execParams):
 			try container.encode(execParams, forKey: .echoExecute)
 		case .echoExecuteFile(let data):
@@ -185,13 +191,17 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
-	public struct HelpData: Codable, Equatable {
+	public struct HelpData: Codable, Equatable, CustomStringConvertible {
 		public let topic: String
 		public let items: [String: String]
 		
 		public init(topic: String, items: [String: String]) {
 			self.topic = topic
 			self.items = items
+		}
+		
+		public var description: String {
+			return "Help topic: \(topic): " + items.map { "\($0.0)=\($0.1)"}.joined(separator: ",")
 		}
 		
 		public static func == (lhs: HelpData, rhs: HelpData) -> Bool {
@@ -269,6 +279,8 @@ public enum SessionResponse: Codable {
 extension SessionResponse: CustomStringConvertible {
 	public var description: String {
 		switch self {
+		case .connected(_):
+			return "connected"
 		case .echoExecute(_):
 			return "echo execute"
 		case .echoExecuteFile(let data):
