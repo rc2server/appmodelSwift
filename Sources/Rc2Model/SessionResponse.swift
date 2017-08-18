@@ -146,9 +146,9 @@ public enum SessionResponse: Codable {
 	
 	public struct FileChangedData: Codable, Equatable {
 		public enum FileChangeType: String, Codable {
-			case insert
-			case update
-			case delete
+			case insert = "i"
+			case update = "u"
+			case delete = "d"
 		}
 		public let changeType: FileChangeType
 		public let fileId: Int
