@@ -18,7 +18,8 @@ public enum SessionResponse: Codable {
 	case results(ResultsData)
 	case save(SaveData)
 	case showOutput(ShowOutputData)
-	case variables([Variable])
+	case variableValue(Variable)
+	case variables(ListVariablesData)
 	
 	private enum CodingKeys: String, CodingKey {
 		case connected
@@ -33,6 +34,7 @@ public enum SessionResponse: Codable {
 		case save
 		case showOutput
 		case variables
+		case variableValue
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -57,10 +59,12 @@ public enum SessionResponse: Codable {
 			self = .save(data)
 		} else if let data = try? container.decode(ShowOutputData.self, forKey: .showOutput) {
 			self = .showOutput(data)
-		} else if let data = try? container.decode(Array<Variable>.self, forKey: .variables) {
+		} else if let data = try? container.decode(ListVariablesData.self, forKey: .variables) {
 			self = .variables(data)
 		} else if let data = try? container.decode(BulkUserInfo.self, forKey: .connected) {
 			self = .connected(data)
+		} else if let data = try? container.decode(Variable.self, forKey: .variableValue) {
+			self = .variableValue(data)
 		} else {
 			throw SessionError.decoding
 		}
@@ -93,6 +97,8 @@ public enum SessionResponse: Codable {
 			try container.encode(data, forKey: .showOutput)
 		case .variables(let data):
 			try container.encode(data, forKey: .variables)
+		case .variableValue(let data):
+			try container.encode(data, forKey: .variableValue)
 		}
 	}
 	
@@ -273,6 +279,20 @@ public enum SessionResponse: Codable {
 			return lhs.transactionId == rhs.transactionId && lhs.file.id == rhs.file.id && lhs.fileData == rhs.fileData
 		}
 	}
+	
+	public struct ListVariablesData: Codable, Equatable {
+		public let values: [Variable]
+		public let delta: Bool
+		
+		public init(values: [Variable], delta: Bool) {
+			self.values = values
+			self.delta = delta
+		}
+		
+		public static func == (lhs: ListVariablesData, rhs: ListVariablesData) -> Bool {
+			return lhs.delta == rhs.delta && lhs.values == rhs.values
+		}
+	}
 }
 
 // MARK: - CustomStringConvertible
@@ -303,6 +323,8 @@ extension SessionResponse: CustomStringConvertible {
 			return "show output"
 		case .variables(_):
 			return "variables"
+		case .variableValue(_):
+			return "single variable"
 		}
 	}
 }
