@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct User: Codable {
+public struct User: Codable, CustomDebugStringConvertible {
 	public let id: Int
 	public let version: Int
 	public let login: String
@@ -65,4 +65,7 @@ public struct User: Codable {
 		try container.encode(isEnabled, forKey: .isEnabled)
 		try container.encode(isAdmin, forKey: .isAdmin)
 	}
+	
+	public var debugDescription: String { return "<User: \(login) \(id)" }
+
 }
