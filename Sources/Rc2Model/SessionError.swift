@@ -19,6 +19,7 @@ public enum SessionError: RawRepresentable, Error, Codable, Equatable {
 	case encoding
 	case decoding
 	case compute(code: SessionErrorCode, details: String?, transactionId: String?)
+	case duplicate
 
 	public init?(rawValue: String) {
 		switch rawValue {
@@ -31,6 +32,7 @@ public enum SessionError: RawRepresentable, Error, Codable, Equatable {
 			case "permissionDenied": self = .permissionDenied
 			case "encoding": self = .encoding
 			case "decoding": self = .decoding
+			case "duplicate": self = .duplicate
 			default: return nil
 		}
 	}
@@ -47,6 +49,7 @@ public enum SessionError: RawRepresentable, Error, Codable, Equatable {
 		case .encoding: return "encoding"
 		case .decoding: return "decoding"
 		case .compute(code: let scode, details: _, transactionId: _): return "compute: \(scode.rawValue)"
+		case .duplicate: return "duplicate"
 		}
 	}
 	
