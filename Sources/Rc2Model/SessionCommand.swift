@@ -24,6 +24,7 @@ public enum SessionCommand: Codable, CustomStringConvertible {
 	case getVariable(String)
 	case help(String)
 	case save(SaveParams)
+	/// if true, send all values. Even if was already true
 	case watchVariables(Bool)
 
 	public var description: String {

@@ -20,7 +20,8 @@ public struct FileType: Codable {
 	public let isText: Bool
 	public var isImage: Bool { return (rawMimeType ?? "").hasPrefix("image/") }
 	public var isEditable: Bool { return isSource || isDualUse }
-
+	/// Name of Image in asset catalog to represent a file of this type.
+	public let iconName: String?
 	public var mimeType: String {
 		if rawMimeType != nil { return rawMimeType! }
 		return (isText ? "text/plain": "application/octet-stream") as String
@@ -65,6 +66,7 @@ public struct FileType: Codable {
 		return fileType(withExtension: String(fileName[range.upperBound...]))
 	}
 
+	// capitalized since the json keys are capitalized
 	private enum CodingKeys: String, CodingKey {
 		case Name
 		case Extension
@@ -78,6 +80,7 @@ public struct FileType: Codable {
 		case IsTextFile
 		case IsImage
 		case Description
+		case IconName
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -87,6 +90,7 @@ public struct FileType: Codable {
 		uti = try container.decode(String.self, forKey: .UTTypeIdentifier)
 		details = try container.decodeIfPresent(String.self, forKey: .Description)
 		rawMimeType = try container.decodeIfPresent(String.self, forKey: .MimeType)
+		iconName = try container.decodeIfPresent(String.self, forKey: .IconName)
 		isImportable = try container.decodeIfPresent(Bool.self, forKey: .Importable) ?? false
 		isSource = try container.decodeIfPresent(Bool.self, forKey: .IsSrc) ?? false
 		isDualUse = try container.decodeIfPresent(Bool.self, forKey: .DualUse) ?? false
@@ -102,6 +106,7 @@ public struct FileType: Codable {
 		try container.encode(uti, forKey: .UTTypeIdentifier)
 		try container.encodeIfPresent(details, forKey: .Description)
 		try container.encodeIfPresent(rawMimeType, forKey: .MimeType)
+		try container.encodeIfPresent(iconName, forKey: .IconName)
 		if isCreatable { try container.encode(true, forKey: .Creatable) }
 		if isImportable { try container.encode(true, forKey: .Importable) }
 		if isExecutable { try container.encode(true, forKey: .Executable) }
