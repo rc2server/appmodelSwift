@@ -14,6 +14,7 @@ public enum SessionCommand: Codable, CustomStringConvertible {
 		case fileOperation
 		case getVariable
 		case help
+		case info
 		case save
 		case watchVariables
 	}
@@ -23,6 +24,7 @@ public enum SessionCommand: Codable, CustomStringConvertible {
 	case fileOperation(FileOperationParams)
 	case getVariable(String)
 	case help(String)
+	case info
 	case save(SaveParams)
 	/// if true, send all values. Even if was already true
 	case watchVariables(Bool)
@@ -39,6 +41,8 @@ public enum SessionCommand: Codable, CustomStringConvertible {
 			return "getVariable \(varname)"
 		case .help(let topic):
 			return "help \(topic)"
+		case .info:
+			return "workspace info"
 		case .save(let saveinfo):
 			return "save \(saveinfo.fileId)"
 		case .watchVariables(let turnon):
@@ -71,6 +75,8 @@ public enum SessionCommand: Codable, CustomStringConvertible {
 			self = .fileOperation(opparams)
 		} else if let topic = try? container.decode(String.self, forKey: .help) {
 			self = .help(topic)
+		} else if let _ = try? container.decode(Bool.self, forKey: .info) {
+			self = .info
 		} else if let savep = try? container.decode(SaveParams.self, forKey: .save) {
 			self = .save(savep)
 		} else if let enable = try? container.decode(Bool.self, forKey: .watchVariables) {
@@ -94,6 +100,8 @@ public enum SessionCommand: Codable, CustomStringConvertible {
 				try container.encode(varName, forKey: .getVariable)
 			case .help(let topic):
 				try container.encode(topic, forKey: .help)
+			case .info:
+				try container.encode(true, forKey: .info)
 			case .save(let sparams):
 				try container.encode(sparams, forKey: .save)
 			case .watchVariables(let enable):
@@ -239,6 +247,8 @@ extension SessionCommand: Equatable {
 			return params1 == params2
 		case(.help(let params1), .help(let params2)):
 			return params1 == params2
+		case (.info, .info):
+			return true
 		case(.fileOperation(let params1), .fileOperation(let params2)):
 			return params1 == params2
 		case(.save(let params1), .save(let params2)):

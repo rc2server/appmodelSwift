@@ -15,6 +15,7 @@ public enum SessionResponse: Codable {
 	case fileChanged(FileChangedData)
 	case fileOperation(FileOperationData)
 	case help(HelpData)
+	case info(InfoData)
 	case results(ResultsData)
 	case save(SaveData)
 	case showOutput(ShowOutputData)
@@ -30,6 +31,7 @@ public enum SessionResponse: Codable {
 		case fileChanged
 		case fileOperation
 		case help
+		case info
 		case results
 		case save
 		case showOutput
@@ -55,6 +57,8 @@ public enum SessionResponse: Codable {
 			self = .help(data)
 		} else if let data = try? container.decode(ResultsData.self, forKey: .results) {
 			self = .results(data)
+		} else if let data = try? container.decode(InfoData.self, forKey: .info) {
+			self = .info(data)
 		} else if let data = try? container.decode(SaveData.self, forKey: .save) {
 			self = .save(data)
 		} else if let data = try? container.decode(ShowOutputData.self, forKey: .showOutput) {
@@ -89,6 +93,8 @@ public enum SessionResponse: Codable {
 			try container.encode(data, forKey: .fileOperation)
 		case .help(let data):
 			try container.encode(data, forKey: .help)
+		case .info(let data):
+			try container.encode(data, forKey: .info)
 		case .results(let data):
 			try container.encode(data, forKey: .results)
 		case .save(let data):
@@ -215,6 +221,20 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
+	public struct InfoData: Codable, Equatable {
+		public let workspace: Workspace
+		public let files: [File]
+		
+		public init(workspace: Workspace, files: [File]) {
+			self.workspace = workspace
+			self.files = files
+		}
+		
+		public static func == (lhs: InfoData, rhs: InfoData) -> Bool {
+			return lhs.workspace == rhs.workspace && lhs.files == rhs.files
+		}
+	}
+
 	public struct ResultsData: Codable, Equatable {
 		public let transactionId: String
 		public let output: String
@@ -315,6 +335,8 @@ extension SessionResponse: CustomStringConvertible {
 			return "file operation \(data.operation) \(data.fileIdString)"
 		case .help(let data):
 			return "help on \(data.topic)"
+		case .info(_):
+			return "info for workspace"
 		case .results(_):
 			return "results"
 		case .save(_):
