@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct File: Codable, CustomStringConvertible {
+public struct File: Codable, Equatable, CustomStringConvertible {
 	/// old client property name, should be changed to `id`
 	@available(*, deprecated)
 	public var fileId: Int { return id }
@@ -36,4 +36,10 @@ public struct File: Codable, CustomStringConvertible {
 		self.lastModified = lastModified
 		self.fileSize = fileSize
 	}
+	
+	/// equality is based on id and version
+	public static func == (lhs: File, rhs: File) -> Bool {
+		return lhs.id == rhs.id && lhs.version == rhs.version
+	}
+
 }

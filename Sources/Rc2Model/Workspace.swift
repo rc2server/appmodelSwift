@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct Workspace: Codable {
+public struct Workspace: Codable, Equatable {
 	public let id: Int
 	public let version: Int
 	public let name: String
@@ -26,6 +26,11 @@ public struct Workspace: Codable {
 		self.uniqueId = uniqueId
 		self.lastAccess = lastAccess
 		self.dateCreated = dateCreated
+	}
+
+	/// equality is based on id and version
+	public static func == (lhs: Workspace, rhs: Workspace) -> Bool {
+		return lhs.id == rhs.id && lhs.version == rhs.version
 	}
 }
 
