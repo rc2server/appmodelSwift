@@ -156,7 +156,7 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
-	public struct FileChangedData: Codable, Equatable {
+	public struct FileChangedData: Codable, Equatable, CustomStringConvertible {
 		public enum FileChangeType: String, Codable {
 			case insert = "i"
 			case update = "u"
@@ -173,6 +173,10 @@ public enum SessionResponse: Codable {
 			self.file = file
 		}
 		
+		public var description: String {
+			return "file \(fileId) change: \(changeType)"
+		}
+		
 		public static func == (lhs: FileChangedData, rhs: FileChangedData) -> Bool {
 			return lhs.changeType == rhs.changeType && lhs.fileId == rhs.fileId
 		}
@@ -182,24 +186,27 @@ public enum SessionResponse: Codable {
 		public let transactionId: String
 		public let operation: FileOperation
 		public let success: Bool
+		public let fileId: Int
+		/// file data only included when a file was duplicated
 		public let file: File?
 		public let error: SessionError?
 		
 		public var fileIdString: String {
-			guard let id = file?.id else { return "-" }
-			return String(id)
+			return String(fileId)
 		}
 		
-		public init(transactionId: String, operation: FileOperation, success: Bool, file: File?, error: SessionError?) {
+		public init(transactionId: String, operation: FileOperation, success: Bool, fileId: Int, file: File?, error: SessionError?)
+		{
 			self.transactionId = transactionId
 			self.operation = operation
 			self.success = success
+			self.fileId = fileId
 			self.file = file
 			self.error = error
 		}
 		
 		public static func == (lhs: FileOperationData, rhs: FileOperationData) -> Bool {
-			return lhs.transactionId == rhs.transactionId && lhs.operation == rhs.operation && lhs.success == rhs.success && lhs.file?.id == rhs.file?.id && lhs.error == rhs.error
+			return lhs.transactionId == rhs.transactionId && lhs.operation == rhs.operation && lhs.success == rhs.success && lhs.fileId == rhs.fileId && lhs.error == rhs.error
 		}
 	}
 	
