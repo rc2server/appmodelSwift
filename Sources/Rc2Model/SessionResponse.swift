@@ -309,15 +309,17 @@ public enum SessionResponse: Codable {
 	
 	public struct ListVariablesData: Codable, Equatable {
 		public let values: [Variable]
+		public let removed: [String]
 		public let delta: Bool
 		
-		public init(values: [Variable], delta: Bool) {
+		public init(values: [Variable], removed: [String], delta: Bool) {
 			self.values = values
 			self.delta = delta
+			self.removed = removed
 		}
 		
 		public static func == (lhs: ListVariablesData, rhs: ListVariablesData) -> Bool {
-			return lhs.delta == rhs.delta && lhs.values == rhs.values
+			return lhs.delta == rhs.delta && lhs.values == rhs.values && lhs.removed == rhs.removed
 		}
 	}
 }

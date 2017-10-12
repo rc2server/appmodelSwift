@@ -25,7 +25,6 @@ public enum VariableType: Codable, Equatable {
 	case dataFrame
 	case environment
 	case function(String)
-	case s3Object
 	case s4Object
 	
 	func isContainer() -> Bool {
@@ -52,7 +51,6 @@ public enum VariableType: Codable, Equatable {
 		case dataFrame
 		case environment
 		case function
-		case s3Object
 		case s4Object
 	}
 	
@@ -84,8 +82,6 @@ public enum VariableType: Codable, Equatable {
 			self = .environment
 		} else if let value = try? container.decode(String.self, forKey: .function) {
 			self = .function(value)
-		} else if let _ = try? container.decode(Bool.self, forKey: .s3Object) {
-			self = .s3Object
 		} else if let _ = try? container.decode(Bool.self, forKey: .s4Object) {
 			self = .s4Object
 		} else {
@@ -121,8 +117,6 @@ public enum VariableType: Codable, Equatable {
 			try container.encode(true, forKey: .environment)
 		case .function(let body):
 			try container.encode(body, forKey: .function)
-		case .s3Object:
-			try container.encode(true, forKey: .s3Object)
 		case .s4Object:
 			try container.encode(true, forKey: .s4Object)
 		}
@@ -157,8 +151,6 @@ public enum VariableType: Codable, Equatable {
 			return true
 		case (.function(let b1), .function(let b2)):
 			return b1 == b2
-		case (.s3Object, .s3Object):
-			return true
 		case (.s4Object, .s4Object):
 			return true
 		default:

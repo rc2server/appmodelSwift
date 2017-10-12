@@ -10,17 +10,15 @@ open class Variable: Codable, Equatable, CustomStringConvertible {
 	public let name: String
 	public let length: Int
 	public let type: VariableType
-	public let primitiveValue: PrimitiveValue?
 	public let classNameR: String
 	///a more descriptive description: e.g. for a factor, list all the values
 	public let summary: String
 	
-	public init(name: String, length: Int, type: VariableType, primitiveValue: PrimitiveValue? = nil, className: String = "<unknown>", summary: String = "")
+	public init(name: String, length: Int, type: VariableType, className: String = "<unknown>", summary: String = "")
 	{
 		self.name = name
 		self.length = length
 		self.type = type
-		self.primitiveValue = primitiveValue
 		self.classNameR = className
 		self.summary = summary.count > 0 ? summary: "\(classNameR)[\(length)]"
 	}
@@ -42,7 +40,7 @@ open class Variable: Codable, Equatable, CustomStringConvertible {
 	public var levels: [String]? { return nil }
 	
 	public static func == (lhs: Variable, rhs: Variable) -> Bool {
-		return lhs.name == rhs.name && lhs.count == rhs.count && lhs.type == rhs.type && lhs.primitiveValue == rhs.primitiveValue && lhs.classNameR == rhs.classNameR && lhs.summary == rhs.summary
+		return lhs.name == rhs.name && lhs.count == rhs.count && lhs.type == rhs.type && lhs.classNameR == rhs.classNameR && lhs.summary == rhs.summary
 	}
 }
 
