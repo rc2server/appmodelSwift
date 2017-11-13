@@ -12,7 +12,7 @@ open class Variable: Codable, Equatable, CustomStringConvertible {
 	public let type: VariableType
 	public let classNameR: String
 	///a more descriptive description: e.g. for a factor, list all the values
-	public let summary: String
+	public let _summary: String?
 	
 	public init(name: String, length: Int, type: VariableType, className: String = "<unknown>", summary: String = "")
 	{
@@ -20,11 +20,20 @@ open class Variable: Codable, Equatable, CustomStringConvertible {
 		self.length = length
 		self.type = type
 		self.classNameR = className
-		self.summary = summary.count > 0 ? summary: "\(classNameR)[\(length)]"
+		_summary = summary.count > 0 ? summary: nil
 	}
 
 	/// a string representation of the value for display. e.g. for a factor, the name and number of possible values
 	public var description: String { return "\(classNameR)[\(length)]" }
+	
+	public var summary: String {
+		switch type {
+		case .primitive(let pval):
+			return pval.description
+		default:
+			return description
+		}
+	}
 	
 	//the number of values in this variable locally (since all R variables are vectors)
 	public var count: Int { return 0 }
