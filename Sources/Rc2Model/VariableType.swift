@@ -17,7 +17,7 @@ public enum VariableType: Codable, Equatable {
 	/// an R value of type POSIXct or POSIXlt as a DateVariable object
 	case dateTime(Date)
 	case vector
-	case matrix
+	case matrix(MatrixData)
 	case array
 	case list([Variable])
 	/// returned as a FactorVariable
@@ -69,8 +69,8 @@ public enum VariableType: Codable, Equatable {
 			self = .vector
 		} else if let _ = try? container.decode(Bool.self, forKey: .array) {
 			self = .array
-		} else if let _ = try? container.decode(Bool.self, forKey: .matrix) {
-			self = .matrix
+		} else if let matrixData = try? container.decode(MatrixData.self, forKey: .matrix) {
+			self = .matrix(matrixData)
 		} else if let values = try? container.decode(Array<Variable>.self, forKey: .list) {
 			self = .list(values)
 		} else if let values = try? container.decode(Array<Int>.self, forKey: .factorValues) {
@@ -104,8 +104,8 @@ public enum VariableType: Codable, Equatable {
 			try container.encode(true, forKey: .vector)
 		case .array:
 			try container.encode(true, forKey: .array)
-		case .matrix:
-			try container.encode(true, forKey: .matrix)
+		case .matrix(let matrixData):
+			try container.encode(matrixData, forKey: .matrix)
 		case .list:
 			try container.encode(true, forKey: .list)
 		case .factor(values: let vals, levelNames: let levels):
@@ -159,4 +159,18 @@ public enum VariableType: Codable, Equatable {
 	}
 }
 
-
+public struct MatrixData: Codable {
+	public let value: PrimitiveValue
+	public let rowCount: Int
+	public let colCount: Int
+	public let colNames: [String]?
+	public let rowNames: [String]?
+	
+	public init(value: PrimitiveValue, rowCount: Int, colCount: Int, colNames: [String]?, rowNames: [String]?) {
+		self.value = value
+		self.rowCount = rowCount
+		self.colCount = colCount
+		self.colNames = colNames
+		self.rowNames = rowNames
+	}
+}
