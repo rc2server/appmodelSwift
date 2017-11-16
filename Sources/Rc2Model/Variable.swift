@@ -31,7 +31,7 @@ open class Variable: Codable, Equatable, CustomStringConvertible {
 		case .primitive(let pval):
 			return pval.description
 		default:
-			return description
+			return _summary ?? description
 		}
 	}
 	
