@@ -12,8 +12,8 @@ public enum PrimitiveValue: Codable, Equatable, CustomStringConvertible {
 	case boolean([Bool])
 	case integer([Int])
 	case double([Double])
-	case string([String])
-	case complex([String])
+	case string([String?])
+	case complex([String?])
 	case raw
 	case null
 	
@@ -36,9 +36,9 @@ public enum PrimitiveValue: Codable, Equatable, CustomStringConvertible {
 			self = .integer(value)
 		} else if let value = try? container.decode(Array<Double>.self, forKey: .double) {
 			self = .double(value)
-		} else if let value = try? container.decode(Array<String>.self, forKey: .string) {
+		} else if let value = try? container.decode(Array<String?>.self, forKey: .string) {
 			self = .string(value)
-		} else if let value = try? container.decode(Array<String>.self, forKey: .complex) {
+		} else if let value = try? container.decode(Array<String?>.self, forKey: .complex) {
 			self = .complex(value)
 		} else if let _ = try? container.decode(Bool.self, forKey: .raw) {
 			self = .raw
@@ -79,9 +79,9 @@ public enum PrimitiveValue: Codable, Equatable, CustomStringConvertible {
 		case .double(let vals):
 			return "[\((vals.map { String($0) }).joined(separator: ", "))]"
 		case .string(let vals):
-			return "[\((vals.map { String($0) }).joined(separator: ", "))]"
+			return "[\((vals.map { String($0 ?? "<NA>") }).joined(separator: ", "))]"
 		case .complex(let vals):
-			return "[\((vals.map { String($0) }).joined(separator: ", "))]"
+			return "[\((vals.map { String($0 ?? "<NA>") }).joined(separator: ", "))]"
 		case .raw:
 			return "RAW"
 		case .null:
@@ -98,9 +98,9 @@ public enum PrimitiveValue: Codable, Equatable, CustomStringConvertible {
 		case (.double(let d1), .double(let d2)):
 			return d1 == d2
 		case (.string(let s1), .string(let s2)):
-			return s1 == s2
+			return compare(s1, s2)
 		case (.complex(let c1), .complex(let c2)):
-			return c1 == c2
+			return compare(c1, c2)
 		case (.raw, .raw):
 			return true
 		case (.null, .null):
@@ -110,3 +110,14 @@ public enum PrimitiveValue: Codable, Equatable, CustomStringConvertible {
 		}
 	}
 }
+
+fileprivate func compare<T: Comparable>(_ array1: [T?], _ array2: [T?]) -> Bool {
+	guard array1.count == array2.count else { return false }
+	for index in array1.indices {
+		if array1[index] == nil && array2[index] == nil { return true }
+		if array1[index] == nil || array2[index] == nil { return false }
+		if array1[index]! != array2[index]! { return false }
+	}
+	return true
+}
+

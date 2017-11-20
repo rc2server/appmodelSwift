@@ -39,9 +39,22 @@ open class Variable: Codable, Equatable, CustomStringConvertible {
 	public var count: Int { return 0 }
 	
 	public var isPrimitive: Bool { if case .primitive(_) = type { return true }; return false }
-	public var isFactor: Bool { if case .factor(_, _) = type { return true }; return false }
-	public var isDate: Bool { if case .date(_) = type { return true }; return false }
-	public var isDateTime: Bool { if case .dateTime(_) = type { return true }; return false }
+	public var isFactor: Bool { if case .factor = type { return true }; return false }
+	public var isDate: Bool { if case .date = type { return true }; return false }
+	public var isDateTime: Bool { if case .dateTime = type { return true }; return false }
+
+	/// if a primitive type, the primitive value
+	public var primitiveValue: PrimitiveValue? { if case .primitive(let pval) = type { return pval }; return nil }
+	/// the date value if this variable represents a date or datetime
+	public var dateValue: Date? {
+		switch type {
+			case .date(let dval): return dval
+			case .dateTime(let dval): return dval
+			default: return nil
+		}
+	}
+	/// if this variable is a matrix, the matrix data
+	public var matrixData: MatrixData? { if case .matrix(let data) = type { return data }; return nil }
 	
 	///if a function type, returns the source code for the function
 	public var functionBody: String? { if case let .function(val) = type { return val }; return nil }
