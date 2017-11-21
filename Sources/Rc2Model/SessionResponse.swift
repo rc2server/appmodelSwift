@@ -308,11 +308,11 @@ public enum SessionResponse: Codable {
 	}
 	
 	public struct ListVariablesData: Codable, Equatable {
-		public let variables: [Variable]
+		public let variables: [String: Variable]
 		public let removed: [String]
 		public let delta: Bool
 		
-		public init(values: [Variable], removed: [String], delta: Bool) {
+		public init(values: [String: Variable], removed: [String], delta: Bool) {
 			self.variables = values
 			self.delta = delta
 			self.removed = removed
