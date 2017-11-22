@@ -22,7 +22,7 @@ public enum VariableType: Codable, Equatable {
 	case list([Variable])
 	/// returned as a FactorVariable
 	case factor(values: [Int], levelNames: [String]?)
-	case dataFrame
+	case dataFrame(DataFrameData)
 	case environment
 	case function(String)
 	case s4Object
@@ -76,8 +76,8 @@ public enum VariableType: Codable, Equatable {
 		} else if let values = try? container.decode(Array<Int>.self, forKey: .factorValues) {
 			let levels: [String]? = try container.decodeIfPresent(Array<String>.self, forKey: .factorLevels)
 			self = .factor(values: values, levelNames: levels)
-		} else if let _ = try? container.decode(Bool.self, forKey: .dataFrame) {
-			self = .dataFrame
+		} else if let values = try? container.decode(DataFrameData.self, forKey: .dataFrame) {
+			self = .dataFrame(values)
 		} else if let _ = try? container.decode(Bool.self, forKey: .environment) {
 			self = .environment
 		} else if let value = try? container.decode(String.self, forKey: .function) {
@@ -145,8 +145,8 @@ public enum VariableType: Codable, Equatable {
 			if l1 == nil && l2 == nil { return true }
 			guard let no1 = l1, let no2 = l2 else { return false }
 			return no1 == no2
-		case (.dataFrame, .dataFrame):
-			return true
+		case (.dataFrame(let df1), .dataFrame(let df2)):
+			return df1 == df2
 		case (.environment, .environment):
 			return true
 		case (.function(let b1), .function(let b2)):
@@ -156,6 +156,27 @@ public enum VariableType: Codable, Equatable {
 		default:
 			return false
 		}
+	}
+}
+
+public struct DataFrameData: Codable, Equatable {
+	public let colCount: Int
+	public let rowCount: Int
+	public let colNames: [String]
+	public let rowNames: [String]?
+	public let value: [PrimitiveValue]
+	
+	public init(value: [PrimitiveValue], colCount: Int, rowCount: Int, colNames: [String], rowNames: [String]?) {
+		self.colCount = colCount
+		self.rowCount = rowCount
+		self.colNames = colNames
+		self.rowNames = rowNames
+		self.value = value
+	}
+	
+	public static func ==(lhs: DataFrameData, rhs: DataFrameData) -> Bool {
+		guard lhs.colCount == rhs.colCount, lhs.rowCount == rhs.rowCount, lhs.colNames == rhs.colNames, lhs.value == rhs.value, compare(lhs.rowNames, rhs.rowNames) else { return false }
+		return true
 	}
 }
 
