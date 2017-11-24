@@ -9,9 +9,9 @@ import Foundation
 /// The possible primitive value types
 ///
 public enum PrimitiveValue: Codable, Equatable, CustomStringConvertible {
-	case boolean([Bool])
-	case integer([Int])
-	case double([Double])
+	case boolean([Bool?])
+	case integer([Int?])
+	case double([Double?])
 	case string([String?])
 	case complex([String?])
 	case raw
@@ -73,11 +73,11 @@ public enum PrimitiveValue: Codable, Equatable, CustomStringConvertible {
 	public var description: String {
 		switch self {
 		case .boolean(let vals):
-			return "[\((vals.map { String($0) }).joined(separator: ", "))]"
+			return "[\((vals.map { $0 == nil ? "<NA>" : String($0!) }).joined(separator: ", "))]"
 		case .integer(let vals):
-			return "[\((vals.map { String($0) }).joined(separator: ", "))]"
+			return "[\((vals.map { $0 == nil ? "<NA>" : String($0!) }).joined(separator: ", "))]"
 		case .double(let vals):
-			return "[\((vals.map { String($0) }).joined(separator: ", "))]"
+			return "[\((vals.map { $0 == nil ? "<NA>" : String($0!) }).joined(separator: ", "))]"
 		case .string(let vals):
 			return "[\((vals.map { String($0 ?? "<NA>") }).joined(separator: ", "))]"
 		case .complex(let vals):
@@ -92,11 +92,11 @@ public enum PrimitiveValue: Codable, Equatable, CustomStringConvertible {
 	public static func == (lhs: PrimitiveValue, rhs: PrimitiveValue) -> Bool {
 		switch (lhs, rhs) {
 		case (.boolean(let b1), .boolean(let b2)):
-			return b1 == b2
+			return compare(b1, b2)
 		case (.integer(let i1), .integer(let i2)):
-			return i1 == i2
+			return compare(i1, i2)
 		case (.double(let d1), .double(let d2)):
-			return d1 == d2
+			return compare(d1, d2)
 		case (.string(let s1), .string(let s2)):
 			return compare(s1, s2)
 		case (.complex(let c1), .complex(let c2)):

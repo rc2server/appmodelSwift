@@ -55,6 +55,8 @@ open class Variable: Codable, Equatable, CustomStringConvertible {
 	}
 	/// if this variable is a matrix, the matrix data
 	public var matrixData: MatrixData? { if case .matrix(let data) = type { return data }; return nil }
+	/// if htis variable is a data frame, the dataFrame data
+	public var dataFrameData: DataFrameData? { if case .dataFrame(let data) = type { return data }; return nil }
 	
 	///if a function type, returns the source code for the function
 	public var functionBody: String? { if case let .function(val) = type { return val }; return nil }

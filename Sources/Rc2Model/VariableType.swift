@@ -160,22 +160,32 @@ public enum VariableType: Codable, Equatable {
 }
 
 public struct DataFrameData: Codable, Equatable {
-	public let colCount: Int
-	public let rowCount: Int
-	public let colNames: [String]
-	public let rowNames: [String]?
-	public let value: [PrimitiveValue]
+	public struct Column: Codable, Equatable {
+		public let name: String
+		public let value: PrimitiveValue
+
+		public init(name: String, value: PrimitiveValue) {
+			self.name = name
+			self.value = value
+		}
+		
+		public static func ==(lhs: DataFrameData.Column, rhs: DataFrameData.Column) -> Bool {
+			return lhs.name == rhs.name && lhs.value == rhs.value
+		}
+	}
 	
-	public init(value: [PrimitiveValue], colCount: Int, rowCount: Int, colNames: [String], rowNames: [String]?) {
-		self.colCount = colCount
+	public let columns: [Column]
+	public let rowCount: Int
+	public let rowNames: [String]?
+	
+	public init(columns: [Column], rowCount: Int, rowNames: [String]?) {
+		self.columns = columns
 		self.rowCount = rowCount
-		self.colNames = colNames
 		self.rowNames = rowNames
-		self.value = value
 	}
 	
 	public static func ==(lhs: DataFrameData, rhs: DataFrameData) -> Bool {
-		guard lhs.colCount == rhs.colCount, lhs.rowCount == rhs.rowCount, lhs.colNames == rhs.colNames, lhs.value == rhs.value, compare(lhs.rowNames, rhs.rowNames) else { return false }
+		guard lhs.columns == rhs.columns, lhs.rowCount == rhs.rowCount, compare(lhs.rowNames, rhs.rowNames) else { return false }
 		return true
 	}
 }
