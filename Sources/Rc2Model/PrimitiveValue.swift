@@ -30,11 +30,11 @@ public enum PrimitiveValue: Codable, Equatable, CustomStringConvertible {
 	/// implementation of Decodable
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		if let value = try? container.decode(Array<Bool>.self, forKey: .boolean) {
+		if let value = try? container.decode(Array<Bool?>.self, forKey: .boolean) {
 			self = .boolean(value)
-		} else if let value = try? container.decode(Array<Int>.self, forKey: .integer) {
+		} else if let value = try? container.decode(Array<Int?>.self, forKey: .integer) {
 			self = .integer(value)
-		} else if let value = try? container.decode(Array<Double>.self, forKey: .double) {
+		} else if let value = try? container.decode(Array<Double?>.self, forKey: .double) {
 			self = .double(value)
 		} else if let value = try? container.decode(Array<String?>.self, forKey: .string) {
 			self = .string(value)
