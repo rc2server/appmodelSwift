@@ -5,6 +5,7 @@
 //
 
 import Foundation
+import os
 
 /// possible variable types
 public enum VariableType: Codable, Equatable {
@@ -36,6 +37,12 @@ public enum VariableType: Codable, Equatable {
 		}
 	}
 	
+	public enum Errors: String, Error {
+		case invalidType
+	}
+	
+	/// the key .rawType is the raw value of this enum. Which items are actually encoded are based on that type.
+	/// for example: a matrix will have .rawType = .matrix.rawValue, and .matrix = MatrixData
 	private enum CodingKeys: String, CodingKey {
 		case unknown
 		case primitive
@@ -52,40 +59,51 @@ public enum VariableType: Codable, Equatable {
 		case environment
 		case function
 		case s4Object
+		case rawType
 	}
 	
 	/// implementation of Decodable
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		if let _ = try? container.decode(Bool.self, forKey: .unknown) {
-			self = .unknown
-		} else if let value = try? container.decode(PrimitiveValue.self, forKey: .primitive) {
-			self = .primitive(value)
-		} else if let value = try? container.decode(Date.self, forKey: .date) {
-			self = .date(value)
-		} else if let value = try? container.decode(Date.self, forKey: .dateTime) {
-			self = .dateTime(value)
-		} else if let _ = try? container.decode(Bool.self, forKey: .vector) {
-			self = .vector
-		} else if let _ = try? container.decode(Bool.self, forKey: .array) {
-			self = .array
-		} else if let matrixData = try? container.decode(MatrixData.self, forKey: .matrix) {
-			self = .matrix(matrixData)
-		} else if let values = try? container.decode(Array<Variable>.self, forKey: .list) {
-			self = .list(values)
-		} else if let values = try? container.decode(Array<Int>.self, forKey: .factorValues) {
-			let levels: [String]? = try container.decodeIfPresent(Array<String>.self, forKey: .factorLevels)
-			self = .factor(values: values, levelNames: levels)
-		} else if let values = try? container.decode(DataFrameData.self, forKey: .dataFrame) {
-			self = .dataFrame(values)
-		} else if let _ = try? container.decode(Bool.self, forKey: .environment) {
-			self = .environment
-		} else if let value = try? container.decode(String.self, forKey: .function) {
-			self = .function(value)
-		} else if let _ = try? container.decode(Bool.self, forKey: .s4Object) {
-			self = .s4Object
-		} else {
-			throw SessionError.decoding
+		guard let typeKey = try? container.decode(String.self, forKey: .rawType),
+			let key = CodingKeys(stringValue: typeKey)
+			else { throw Errors.invalidType }
+		do {
+			switch key {
+			case .unknown:
+				self = .unknown
+			case .primitive:
+				self = .primitive(try container.decode(PrimitiveValue.self, forKey: .primitive))
+			case .date:
+				self = .date(try container.decode(Date.self, forKey: .date))
+			case .dateTime:
+				self = .dateTime(try container.decode(Date.self, forKey: .date))
+			case .vector:
+				self = .vector
+			case .array:
+				self = .array
+			case .matrix:
+				self = .matrix(try container.decode(MatrixData.self, forKey: .matrix))
+			case .list:
+				self = .list(try container.decode(Array<Variable>.self, forKey: .list))
+			case .factor:
+				let values = try container.decode(Array<Int>.self, forKey: .factorValues)
+				let levels = try container.decodeIfPresent(Array<String>.self, forKey: .factorLevels)
+				self = .factor(values: values, levelNames: levels)
+			case .dataFrame:
+				self = .dataFrame(try container.decode(DataFrameData.self, forKey: .dataFrame))
+			case .environment:
+				self = .environment
+			case .function:
+				self = .function(try container.decode(String.self, forKey: .function))
+			case .s4Object:
+				self = .s4Object
+			default:
+				throw Errors.invalidType
+			}
+		} catch {
+			os_log("invalid VariableType: %{public}s, error: %{public}s", typeKey, error.localizedDescription)
+			throw Errors.invalidType
 		}
 	}
 	
@@ -93,31 +111,41 @@ public enum VariableType: Codable, Equatable {
 		var container = encoder.container(keyedBy: CodingKeys.self)
 		switch self {
 		case .unknown:
-			try container.encode(true, forKey: .unknown)
+			try container.encode(CodingKeys.unknown.rawValue, forKey: .rawType)
 		case .primitive(let pdata):
+			try container.encode(CodingKeys.primitive.rawValue, forKey: .rawType)
 			try container.encode(pdata, forKey: .primitive)
 		case .date(let date):
+			try container.encode(CodingKeys.date.rawValue, forKey: .rawType)
 			try container.encode(date, forKey: .date)
 		case .dateTime(let date):
+			try container.encode(CodingKeys.dateTime.rawValue, forKey: .rawType)
 			try container.encode(date, forKey: .dateTime)
 		case .vector:
-			try container.encode(true, forKey: .vector)
+			try container.encode(CodingKeys.vector.rawValue, forKey: .rawType)
 		case .array:
-			try container.encode(true, forKey: .array)
+			try container.encode(CodingKeys.array.rawValue, forKey: .rawType)
 		case .matrix(let matrixData):
+			try container.encode(CodingKeys.matrix.rawValue, forKey: .rawType)
 			try container.encode(matrixData, forKey: .matrix)
 		case .list:
+			try container.encode(CodingKeys.list.rawValue, forKey: .rawType)
 			try container.encode(true, forKey: .list)
 		case .factor(values: let vals, levelNames: let levels):
+			try container.encode(CodingKeys.factor.rawValue, forKey: .rawType)
 			try container.encode(vals, forKey: .factorValues)
 			try container.encodeIfPresent(levels, forKey: .factorLevels)
-		case .dataFrame:
-			try container.encode(true, forKey: .dataFrame)
+		case .dataFrame(let dfData):
+			try container.encode(CodingKeys.dataFrame.rawValue, forKey: .rawType)
+			try container.encode(dfData, forKey: .dataFrame)
 		case .environment:
+			try container.encode(CodingKeys.environment.rawValue, forKey: .rawType)
 			try container.encode(true, forKey: .environment)
 		case .function(let body):
+			try container.encode(CodingKeys.function.rawValue, forKey: .rawType)
 			try container.encode(body, forKey: .function)
 		case .s4Object:
+			try container.encode(CodingKeys.s4Object.rawValue, forKey: .rawType)
 			try container.encode(true, forKey: .s4Object)
 		}
 	}
@@ -159,7 +187,9 @@ public enum VariableType: Codable, Equatable {
 	}
 }
 
+/// value representing the data necessary to describe a DataFrame
 public struct DataFrameData: Codable, Equatable {
+	/// data describing a column in a DataFrame
 	public struct Column: Codable, Equatable {
 		public let name: String
 		public let value: PrimitiveValue
@@ -190,6 +220,7 @@ public struct DataFrameData: Codable, Equatable {
 	}
 }
 
+/// value representing the data necessary to describe a Matrix
 public struct MatrixData: Codable {
 	public let value: PrimitiveValue
 	public let rowCount: Int
