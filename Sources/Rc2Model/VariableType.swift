@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import os
+import LoggerAPI
 
 /// possible variable types
 public enum VariableType: Codable, Equatable {
@@ -102,7 +102,7 @@ public enum VariableType: Codable, Equatable {
 				throw Errors.invalidType
 			}
 		} catch {
-			os_log("invalid VariableType: %{public}s, error: %{public}s", typeKey, error.localizedDescription)
+			Log.warning("invalid VariableType: \(typeKey), error: \(error)")
 			throw Errors.invalidType
 		}
 	}
