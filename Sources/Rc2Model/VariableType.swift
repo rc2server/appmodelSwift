@@ -17,7 +17,7 @@ public enum VariableType: Codable, Equatable {
 	case date(Date)
 	/// an R value of type POSIXct or POSIXlt as a DateVariable object
 	case dateTime(Date)
-	case vector
+	case generic([String: Variable])
 	case matrix(MatrixData)
 	case array
 	case list([Variable])
@@ -48,7 +48,7 @@ public enum VariableType: Codable, Equatable {
 		case primitive
 		case date
 		case dateTime
-		case vector
+		case generic
 		case matrix
 		case array
 		case list
@@ -78,8 +78,8 @@ public enum VariableType: Codable, Equatable {
 				self = .date(try container.decode(Date.self, forKey: .date))
 			case .dateTime:
 				self = .dateTime(try container.decode(Date.self, forKey: .date))
-			case .vector:
-				self = .vector
+			case .generic:
+				self = .generic(try container.decode([String: Variable].self, forKey: .generic))
 			case .array:
 				self = .array
 			case .matrix:
@@ -121,8 +121,9 @@ public enum VariableType: Codable, Equatable {
 		case .dateTime(let date):
 			try container.encode(CodingKeys.dateTime.rawValue, forKey: .rawType)
 			try container.encode(date, forKey: .dateTime)
-		case .vector:
-			try container.encode(CodingKeys.vector.rawValue, forKey: .rawType)
+		case .generic(let dict):
+			try container.encode(CodingKeys.generic.rawValue, forKey: .rawType)
+			try container.encode(dict, forKey: .generic)
 		case .array:
 			try container.encode(CodingKeys.array.rawValue, forKey: .rawType)
 		case .matrix(let matrixData):
@@ -160,8 +161,8 @@ public enum VariableType: Codable, Equatable {
 			return val1 == val2
 		case (.dateTime(let val1), .dateTime(let val2)):
 			return val1 == val2
-		case (.vector, .vector):
-			return true
+		case (.generic(let val1), .generic(let val2)):
+			return val1 == val2
 		case (.matrix, .matrix):
 			return true
 		case (.array, .array):
