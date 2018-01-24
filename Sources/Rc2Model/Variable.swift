@@ -70,7 +70,7 @@ open class Variable: Codable, Equatable, CustomStringConvertible {
 
 extension Variable {
 	static public func compareByName (lhs: Variable, rhs: Variable) -> Bool {
-		//compare based on name. TODO: used to allow nil names. Is that really possible?
+		//compare based on name.
 		return lhs.name < rhs.name
 	}
 }

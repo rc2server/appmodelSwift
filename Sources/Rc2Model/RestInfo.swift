@@ -15,5 +15,22 @@ public struct CreateWorkspaceResult: Codable {
 		self.wspaceId = wspaceId
 		self.bulkInfo = bulkInfo
 	}
+
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.container(keyedBy: CodingKeys.self)
+		self.wspaceId = try container.decode(Int.self, forKey: .wspaceId)
+		self.bulkInfo = try container.decode(BulkUserInfo.self, forKey: .bulkInfo)
+	}
+
+	public func encode(to encoder: Encoder) throws {
+		var container = encoder.container(keyedBy: CodingKeys.self)
+		try container.encode(wspaceId, forKey: .wspaceId)
+		try container.encode(bulkInfo, forKey: .bulkInfo)
+	}
+	
+	private enum CodingKeys: String, CodingKey {
+		case wspaceId
+		case bulkInfo
+	}
 }
 
