@@ -19,3 +19,9 @@ public struct Project: Codable {
 		self.name = name
 	}
 }
+
+extension Project: Equatable {
+	public static func == (lhs: Project, rhs: Project) -> Bool {
+		return lhs.id == rhs.id && lhs.version == rhs.version && lhs.userId == rhs.userId && lhs.name == rhs.name
+	}
+}
