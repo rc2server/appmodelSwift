@@ -21,8 +21,9 @@ extension CountableClosedRange: Codable {
 	/// - Throws: decoding error
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		self.lowerBound = try container.decode(Int.self, forKey: .lowerBound) as! Bound
-		self.upperBound = try container.decode(Int.self, forKey: .upperBound) as! Bound
+		let lb = try container.decode(Int.self, forKey: .lowerBound) as! Bound
+		let ub = try container.decode(Int.self, forKey: .upperBound) as! Bound
+		self.init(uncheckedBounds: (lb, ub))
 	}
 	
 	/// Encodable support
