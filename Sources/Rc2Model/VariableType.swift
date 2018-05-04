@@ -199,10 +199,6 @@ public struct DataFrameData: Codable, Equatable {
 			self.name = name
 			self.value = value
 		}
-		
-		public static func ==(lhs: DataFrameData.Column, rhs: DataFrameData.Column) -> Bool {
-			return lhs.name == rhs.name && lhs.value == rhs.value
-		}
 	}
 	
 	public let columns: [Column]
@@ -213,11 +209,6 @@ public struct DataFrameData: Codable, Equatable {
 		self.columns = columns
 		self.rowCount = rowCount
 		self.rowNames = rowNames
-	}
-	
-	public static func ==(lhs: DataFrameData, rhs: DataFrameData) -> Bool {
-		guard lhs.columns == rhs.columns, lhs.rowCount == rhs.rowCount, compare(lhs.rowNames, rhs.rowNames) else { return false }
-		return true
 	}
 }
 

@@ -88,26 +88,5 @@ public enum PrimitiveValue: Codable, Equatable, CustomStringConvertible {
 			return "NULL"
 		}
 	}
-
-	public static func == (lhs: PrimitiveValue, rhs: PrimitiveValue) -> Bool {
-		switch (lhs, rhs) {
-		case (.boolean(let b1), .boolean(let b2)):
-			return compare(b1, b2)
-		case (.integer(let i1), .integer(let i2)):
-			return compare(i1, i2)
-		case (.double(let d1), .double(let d2)):
-			return compare(d1, d2)
-		case (.string(let s1), .string(let s2)):
-			return compare(s1, s2)
-		case (.complex(let c1), .complex(let c2)):
-			return compare(c1, c2)
-		case (.raw, .raw):
-			return true
-		case (.null, .null):
-			return true
-		default:
-			return false
-		}
-	}
 }
 

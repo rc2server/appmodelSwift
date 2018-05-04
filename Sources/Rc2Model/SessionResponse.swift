@@ -116,10 +116,6 @@ public enum SessionResponse: Codable {
 			self.transactionId = transactionId
 			self.source = source
 		}
-		
-		public static func == (lhs: ExecuteData, rhs: ExecuteData) -> Bool {
-			return lhs.transactionId == rhs.transactionId && lhs.source == rhs.source
-		}
 	}
 
 	public struct ExecuteFileData: Codable, Equatable {
@@ -131,10 +127,6 @@ public enum SessionResponse: Codable {
 			self.transactionId = transactionId
 			self.fileId = fileId
 			self.fileVersion = fileVersion
-		}
-		
-		public static func == (lhs: ExecuteFileData, rhs: ExecuteFileData) -> Bool {
-			return lhs.transactionId == rhs.transactionId && lhs.fileId == rhs.fileId && lhs.fileVersion == rhs.fileVersion
 		}
 	}
 
@@ -149,10 +141,6 @@ public enum SessionResponse: Codable {
 			self.batchId = batchId
 			self.expectShowOutput = expectShowOutput
 			self.images = images
-		}
-		
-		public static func == (lhs: ExecCompleteData, rhs: ExecCompleteData) -> Bool {
-			return lhs.transactionId == rhs.transactionId && lhs.batchId == rhs.batchId && lhs.expectShowOutput == rhs.expectShowOutput && lhs.images == rhs.images
 		}
 	}
 	
@@ -175,10 +163,6 @@ public enum SessionResponse: Codable {
 		
 		public var description: String {
 			return "file \(fileId) change: \(changeType)"
-		}
-		
-		public static func == (lhs: FileChangedData, rhs: FileChangedData) -> Bool {
-			return lhs.changeType == rhs.changeType && lhs.fileId == rhs.fileId
 		}
 	}
 	
@@ -204,10 +188,6 @@ public enum SessionResponse: Codable {
 			self.file = file
 			self.error = error
 		}
-		
-		public static func == (lhs: FileOperationData, rhs: FileOperationData) -> Bool {
-			return lhs.transactionId == rhs.transactionId && lhs.operation == rhs.operation && lhs.success == rhs.success && lhs.fileId == rhs.fileId && lhs.error == rhs.error
-		}
 	}
 	
 	public struct HelpData: Codable, Equatable, CustomStringConvertible {
@@ -222,10 +202,6 @@ public enum SessionResponse: Codable {
 		public var description: String {
 			return "Help topic: \(topic): " + items.map { "\($0.0)=\($0.1)"}.joined(separator: ",")
 		}
-		
-		public static func == (lhs: HelpData, rhs: HelpData) -> Bool {
-			return lhs.topic == rhs.topic && lhs.items == rhs.items
-		}
 	}
 	
 	public struct InfoData: Codable, Equatable {
@@ -235,10 +211,6 @@ public enum SessionResponse: Codable {
 		public init(workspace: Workspace, files: [File]) {
 			self.workspace = workspace
 			self.files = files
-		}
-		
-		public static func == (lhs: InfoData, rhs: InfoData) -> Bool {
-			return lhs.workspace == rhs.workspace && lhs.files == rhs.files
 		}
 	}
 
@@ -252,10 +224,6 @@ public enum SessionResponse: Codable {
 			self.output = output
 			self.isStdErr = isError
 		}
-		
-		public static func == (lhs: ResultsData, rhs: ResultsData) -> Bool {
-			return lhs.transactionId == rhs.transactionId && lhs.output == rhs.output && lhs.isStdErr == rhs.isStdErr
-		}
 	}
 	
 	public struct ErrorData: Codable, Equatable {
@@ -265,10 +233,6 @@ public enum SessionResponse: Codable {
 		public init(transactionId: String?, error: SessionError) {
 			self.transactionId = transactionId
 			self.error = error
-		}
-		
-		public static func == (lhs: ErrorData, rhs: ErrorData) -> Bool {
-			return lhs.error == rhs.error && lhs.transactionId == rhs.transactionId
 		}
 	}
 	
@@ -284,10 +248,6 @@ public enum SessionResponse: Codable {
 			self.file = file
 			self.error = error
 		}
-		
-		public static func == (lhs: SaveData, rhs: SaveData) -> Bool {
-			return lhs.transactionId == rhs.transactionId && lhs.success == rhs.success && lhs.file?.id == rhs.file?.id && lhs.error == rhs.error
-		}
 	}
 	
 	public struct ShowOutputData: Codable, Equatable {
@@ -301,10 +261,6 @@ public enum SessionResponse: Codable {
 			self.file = file
 			self.fileData = fileData
 		}
-		
-		public static func == (lhs: ShowOutputData, rhs: ShowOutputData) -> Bool {
-			return lhs.transactionId == rhs.transactionId && lhs.file.id == rhs.file.id && lhs.fileData == rhs.fileData
-		}
 	}
 	
 	public struct ListVariablesData: Codable, Equatable {
@@ -316,10 +272,6 @@ public enum SessionResponse: Codable {
 			self.variables = values
 			self.delta = delta
 			self.removed = removed
-		}
-		
-		public static func == (lhs: ListVariablesData, rhs: ListVariablesData) -> Bool {
-			return lhs.delta == rhs.delta && lhs.variables == rhs.variables && lhs.removed == rhs.removed
 		}
 	}
 }

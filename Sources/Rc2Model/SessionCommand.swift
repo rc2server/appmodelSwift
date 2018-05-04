@@ -7,7 +7,7 @@
 import Foundation
 
 /// a command that can be sent to the server
-public enum SessionCommand: Codable, CustomStringConvertible {
+public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 	private enum CodingKeys: String, CodingKey {
 		case executeFile
 		case execute
@@ -137,11 +137,6 @@ public enum SessionCommand: Codable, CustomStringConvertible {
 			self.lineRange = range
 			self.echo = echo
 		}
-
-		public static func ==(lhs: SessionCommand.ExecuteFileParams, rhs: SessionCommand.ExecuteFileParams) -> Bool
-		{
-			return lhs.fileId == rhs.fileId && lhs.fileVersion == rhs.fileVersion && lhs.transactionId == rhs.transactionId && lhs.lineRange == rhs.lineRange && lhs.echo == rhs.echo
-		}
 }
 	
 	/// Parameters to execute arbitrary code
@@ -164,11 +159,6 @@ public enum SessionCommand: Codable, CustomStringConvertible {
 			self.source = sourceCode
 			self.transactionId = transactionId
 			self.isUserInitiated = userInitiated
-		}
-
-		public static func ==(lhs: SessionCommand.ExecuteParams, rhs: SessionCommand.ExecuteParams) -> Bool
-		{
-			return lhs.source == rhs.source && lhs.transactionId == rhs.transactionId && lhs.isUserInitiated == rhs.isUserInitiated
 		}
 }
 	
@@ -196,11 +186,6 @@ public enum SessionCommand: Codable, CustomStringConvertible {
 			self.transactionId = transactionId
 			self.content = content
 		}
-
-		public static func ==(lhs: SessionCommand.SaveParams, rhs: SessionCommand.SaveParams) -> Bool
-		{
-			return lhs.transactionId == rhs.transactionId && lhs.fileId == rhs.fileId && lhs.fileVersion == rhs.fileVersion && lhs.content == rhs.content
-		}
 	}
 	
 	/// Parameters to perform an operation on a file
@@ -227,39 +212,5 @@ public enum SessionCommand: Codable, CustomStringConvertible {
 			self.operation = operation
 			self.newName = newName
 		}
-
-		public static func ==(lhs: SessionCommand.FileOperationParams, rhs: SessionCommand.FileOperationParams) -> Bool
-		{
-			return lhs.operation == rhs.operation && lhs.fileId == rhs.fileId && lhs.fileVersion == rhs.fileVersion && lhs.transactionId == rhs.transactionId && lhs.newName == rhs.newName
-		}
 	}
 }
-
-extension SessionCommand: Equatable {
-	public static func ==(lhs: SessionCommand, rhs: SessionCommand) -> Bool
-	{
-		switch (lhs, rhs) {
-		case(.execute(let params1), .execute(let params2)):
-			return params1 == params2
-		case(.executeFile(let params1), .executeFile(let params2)):
-			return params1 == params2
-		case(.getVariable(let params1), .getVariable(let params2)):
-			return params1 == params2
-		case(.help(let params1), .help(let params2)):
-			return params1 == params2
-		case (.info, .info):
-			return true
-		case(.fileOperation(let params1), .fileOperation(let params2)):
-			return params1 == params2
-		case(.save(let params1), .save(let params2)):
-			return params1 == params2
-		case(.watchVariables(let params1), .watchVariables(let params2)):
-			return params1 == params2
-		default:
-			return false
-		}
-	}
-	
-	
-}
-

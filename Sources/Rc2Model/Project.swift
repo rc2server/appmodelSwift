@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct Project: Codable {
+public struct Project: Codable, Equatable {
 	public let id: Int
 	public let version: Int
 	public let userId: Int
@@ -17,11 +17,5 @@ public struct Project: Codable {
 		self.version = version
 		self.userId = userId
 		self.name = name
-	}
-}
-
-extension Project: Equatable {
-	public static func == (lhs: Project, rhs: Project) -> Bool {
-		return lhs.id == rhs.id && lhs.version == rhs.version && lhs.userId == rhs.userId && lhs.name == rhs.name
 	}
 }
