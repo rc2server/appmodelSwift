@@ -10,7 +10,7 @@ import XCTest
 class SessionCommandTest: XCTestCase, Rc2TestAdditions {
 	
 	func testExecute() {
-		let execCommand = SessionCommand.makeExecute("2 * 2")
+		let execCommand = SessionCommand.execute(SessionCommand.ExecuteParams(sourceCode: "2 * 2", contextId: nil))
 		let encoder = createEncoder()
 		let data = try! encoder.encode(execCommand)
 		let decoder = createDecoder()

@@ -12,3 +12,4 @@
 
 Common code used for both the client and server side of the swift versions of Rc2.
 
+To compile on macOS, use `swift  build -Xswiftc "-target" -Xswiftc x86_64-apple-macosx10.12`
