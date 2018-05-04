@@ -19,7 +19,7 @@ public enum SessionResponse: Codable {
 	case results(ResultsData)
 	case save(SaveData)
 	case showOutput(ShowOutputData)
-	case variableValue(Variable)
+	case variableValue(VariableValueData)
 	case variables(ListVariablesData)
 	
 	private enum CodingKeys: String, CodingKey {
@@ -67,7 +67,7 @@ public enum SessionResponse: Codable {
 			self = .variables(data)
 		} else if let data = try? container.decode(BulkUserInfo.self, forKey: .connected) {
 			self = .connected(data)
-		} else if let data = try? container.decode(Variable.self, forKey: .variableValue) {
+		} else if let data = try? container.decode(VariableValueData.self, forKey: .variableValue) {
 			self = .variableValue(data)
 		} else {
 			throw SessionError.decoding
@@ -111,10 +111,12 @@ public enum SessionResponse: Codable {
 	public struct ExecuteData: Codable, Equatable {
 		public let transactionId: String
 		public let source: String
+		public let contextId: Int?
 		
-		public init(transactionId: String, source: String) {
+		public init(transactionId: String, source: String, contextId: Int?) {
 			self.transactionId = transactionId
 			self.source = source
+			self.contextId = contextId
 		}
 	}
 
@@ -263,15 +265,27 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
+	public struct VariableValueData: Codable, Equatable {
+		public let value: Variable
+		public let contextId: Int?
+		
+		public init(value: Variable, contextId: Int?) {
+			self.value = value
+			self.contextId = contextId
+		}
+	}
+	
 	public struct ListVariablesData: Codable, Equatable {
 		public let variables: [String: Variable]
 		public let removed: [String]
+		public let contextId: Int?
 		public let delta: Bool
 		
-		public init(values: [String: Variable], removed: [String], delta: Bool) {
+		public init(values: [String: Variable], removed: [String], contextId: Int?, delta: Bool) {
 			self.variables = values
 			self.delta = delta
 			self.removed = removed
+			self.contextId = contextId
 		}
 	}
 }

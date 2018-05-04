@@ -22,12 +22,12 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 	case executeFile(ExecuteFileParams)
 	case execute(ExecuteParams)
 	case fileOperation(FileOperationParams)
-	case getVariable(String)
+	case getVariable(VariableParams)
 	case help(String)
 	case info
 	case save(SaveParams)
 	/// if true, send all values. Even if was already true
-	case watchVariables(Bool)
+	case watchVariables(WatchVariablesParams)
 
 	public var description: String {
 		switch self {
@@ -50,18 +50,6 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		}
 	}
 	
-	/// Factory function to create a command to execute arbitrary code
-	///
-	/// - Parameters:
-	///   - source: the code to execute
-	///   - transactionId: arbitrary transaction id, defaults to a new UUID
-	///   - userInitiated: did the user request this. defaults to true. If false, no output is shown.
-	/// - Returns: the execute command
-	public static func makeExecute(_ source: String, transactionId: String = UUID().uuidString, userInitiated: Bool = true) -> SessionCommand
-	{
-		return .execute(ExecuteParams(sourceCode: source, transactionId: transactionId, userInitiated: userInitiated))
-	}
-	
 	/// implementation of Decodable
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -69,8 +57,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 			self = .executeFile(efile)
 		} else if let script = try? container.decode(ExecuteParams.self, forKey: .execute) {
 			self = .execute(script)
-		} else if let varname = try? container.decode(String.self, forKey: .getVariable) {
-			self = .getVariable(varname)
+		} else if let varParams = try? container.decode(VariableParams.self, forKey: .getVariable) {
+			self = .getVariable(varParams)
 		} else if let opparams = try? container.decode(FileOperationParams.self, forKey: .fileOperation) {
 			self = .fileOperation(opparams)
 		} else if let topic = try? container.decode(String.self, forKey: .help) {
@@ -79,7 +67,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 			self = .info
 		} else if let savep = try? container.decode(SaveParams.self, forKey: .save) {
 			self = .save(savep)
-		} else if let enable = try? container.decode(Bool.self, forKey: .watchVariables) {
+		} else if let enable = try? container.decode(WatchVariablesParams.self, forKey: .watchVariables) {
 			self = .watchVariables(enable)
 		} else {
 			throw SessionError.decoding
@@ -96,8 +84,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 				try container.encode(fileParams, forKey: .executeFile)
 			case .fileOperation(let opParams):
 				try container.encode(opParams, forKey: .fileOperation)
-			case .getVariable(let varName):
-				try container.encode(varName, forKey: .getVariable)
+			case .getVariable(let varParams):
+				try container.encode(varParams, forKey: .getVariable)
 			case .help(let topic):
 				try container.encode(topic, forKey: .help)
 			case .info:
@@ -147,6 +135,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		public let transactionId: String
 		/// true if this is being executed by the user, or false if this is an internal command that should not be visible to the user
 		public let isUserInitiated: Bool
+		/// the context (file) this command refers to
+		public let contextId: Int?
 		
 		/// Create a a set of execution parameters
 		///
@@ -154,14 +144,48 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		///   - sourceCode: the code to execute
 		///   - transactionId: a unique value to associate responses with this command
 		///   - userInitiated: if false, no output or record of this code should be saved
-		public init(sourceCode: String, transactionId: String = UUID().uuidString, userInitiated: Bool = true)
+		public init(sourceCode: String, transactionId: String = UUID().uuidString, userInitiated: Bool = true, contextId: Int?)
 		{
 			self.source = sourceCode
 			self.transactionId = transactionId
 			self.isUserInitiated = userInitiated
+			self.contextId = contextId
 		}
-}
+	}
 	
+	public struct VariableParams: Codable, Equatable {
+		/// the name of the variable to get
+		public let name: String
+		/// the context to search for this variable. nil means search the global environment
+		public let contextId: Int?
+		
+		/// Create a set of variable parameters
+		///
+		/// - Parameters:
+		///   - name: the name of the variable
+		///   - contextId: the id of the context to search
+		public init(name: String, contextId: Int?) {
+			self.name = name
+			self.contextId = contextId
+		}
+	}
+	
+	public struct WatchVariablesParams: Codable, Equatable {
+		/// should watching be enabled or disabled
+		public let watch: Bool
+		/// the context to search for this variable. nil means search the global environment
+		public let contextId: Int?
+		
+		/// creates a struct of parameters
+		///
+		/// - Parameters:
+		///   - watch: enable/disable watching of variables
+		///   - contextId: the id of the context to search
+		public init(watch: Bool, contextId: Int?) {
+			self.watch = watch
+			self.contextId = contextId
+		}
+	}
 	/// Parameters to save content of a file
 	public struct SaveParams: Codable, Equatable {
 		/// a unique, client-specified identifier for this command to allow matching results to it
