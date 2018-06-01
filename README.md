@@ -8,6 +8,8 @@
 
 <img alt="License ISC" src="https://img.shields.io/badge/License-ISC-lightgrey.svg?style=flat" style="max-width:100%;">
 
+<img alt="CI" src="https://travis-ci.org/rc2server/appmodelSwift.svg?branch=markdev" style="max-width: 100%">
+
 </p>
 
 Common code used for both the client and server side of the swift versions of Rc2.

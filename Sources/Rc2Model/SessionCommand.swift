@@ -17,6 +17,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		case info
 		case save
 		case watchVariables
+		case clearEnvironment
 	}
 	
 	case executeFile(ExecuteFileParams)
@@ -26,6 +27,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 	case help(String)
 	case info
 	case save(SaveParams)
+	/// the environment id, 0 for global
+	case clearEnvironment(Int)
 	/// if true, send all values. Even if was already true
 	case watchVariables(WatchVariablesParams)
 
@@ -47,6 +50,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 			return "save \(saveinfo.fileId)"
 		case .watchVariables(let turnon):
 			return "watchVariables \(turnon)"
+		case .clearEnvironment(let envId):
+			return "clear Environment(\(envId))"
 		}
 	}
 	
@@ -69,6 +74,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 			self = .save(savep)
 		} else if let enable = try? container.decode(WatchVariablesParams.self, forKey: .watchVariables) {
 			self = .watchVariables(enable)
+		} else if let envId = try? container.decode(Int.self, forKey: .clearEnvironment) {
+			self = .clearEnvironment(envId)
 		} else {
 			throw SessionError.decoding
 		}
@@ -94,6 +101,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 				try container.encode(sparams, forKey: .save)
 			case .watchVariables(let enable):
 				try container.encode(enable, forKey: .watchVariables)
+			case .clearEnvironment(let envId):
+				try container.encode(envId, forKey: .clearEnvironment)
 		}
 	}
 
