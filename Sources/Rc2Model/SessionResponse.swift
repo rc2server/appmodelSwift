@@ -7,6 +7,7 @@
 import Foundation
 
 public enum SessionResponse: Codable {
+	case computeStatus(ComputeStatus)
 	case connected(BulkUserInfo)
 	case echoExecute(ExecuteData)
 	case echoExecuteFile(ExecuteFileData)
@@ -23,6 +24,7 @@ public enum SessionResponse: Codable {
 	case variables(ListVariablesData)
 	
 	private enum CodingKeys: String, CodingKey {
+		case computeStatus
 		case connected
 		case echoExecute
 		case echoExecuteFile
@@ -69,6 +71,8 @@ public enum SessionResponse: Codable {
 			self = .connected(data)
 		} else if let data = try? container.decode(VariableValueData.self, forKey: .variableValue) {
 			self = .variableValue(data)
+		} else if let status = try? container.decode(ComputeStatus.self, forKey: .computeStatus) {
+			self = .computeStatus(status)
 		} else {
 			throw SessionError.decoding
 		}
@@ -105,7 +109,22 @@ public enum SessionResponse: Codable {
 			try container.encode(data, forKey: .variables)
 		case .variableValue(let data):
 			try container.encode(data, forKey: .variableValue)
+		case .computeStatus(let status):
+			try container.encode(status, forKey: .computeStatus)
 		}
+	}
+	
+	public enum ComputeStatus: String, Codable {
+		/// normal operational state, accepting commands
+		case running
+		/// setting up the initial connection
+		case initializing
+		/// a prolonged activity has to happen before can reach the running state (such as downloading a docker image)
+		case loading
+		/// the connection was closed/dropped and is being reopened. Functionally the same as initializing, but distinct to the user
+		case reconnecting
+		/// failed to connect and not likely to happen in the next few minutes. Try again later.
+		case failed
 	}
 	
 	public struct ExecuteData: Codable, Equatable {
@@ -322,6 +341,8 @@ extension SessionResponse: CustomStringConvertible {
 			return "variables"
 		case .variableValue(_):
 			return "single variable"
+		case .computeStatus(let status):
+			return "compute status update: \(status)"
 		}
 	}
 }
