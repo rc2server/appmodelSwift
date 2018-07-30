@@ -23,7 +23,11 @@ extension CountableClosedRange: Codable {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
 		let lb = try container.decode(Int.self, forKey: .lowerBound) as! Bound
 		let ub = try container.decode(Int.self, forKey: .upperBound) as! Bound
-		self.init(uncheckedBounds: (lb, ub))
+		#if swift(>=4.2)
+			self = lb...ub
+		#else
+			self.init(uncheckedBounds: (lb, ub))
+		#endif
 	}
 	
 	/// Encodable support
