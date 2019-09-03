@@ -5,7 +5,7 @@
 //
 
 import Foundation
-import MJLLogger
+import Logging
 
 /// possible variable types
 public enum VariableType: Codable, Equatable {
@@ -102,7 +102,7 @@ public enum VariableType: Codable, Equatable {
 				throw Errors.invalidType
 			}
 		} catch {
-			Log.warn("invalid VariableType: \(typeKey), error: \(error)")
+			modelLog.warning("invalid VariableType: \(typeKey), error: \(error)")
 			throw Errors.invalidType
 		}
 	}
