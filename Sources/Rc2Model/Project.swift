@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct Project: Codable, Equatable {
+public struct Project: Codable, Hashable {
 	public let id: Int
 	public let version: Int
 	public let userId: Int
