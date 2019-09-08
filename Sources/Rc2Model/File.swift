@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct File: Codable, Equatable, CustomStringConvertible {
+public struct File: Codable, Hashable, CustomStringConvertible {
 	/// old client property name, should be changed to `id`
 	@available(*, deprecated)
 	public var fileId: Int { return id }
