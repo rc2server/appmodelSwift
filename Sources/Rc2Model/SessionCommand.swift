@@ -118,6 +118,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		public let transactionId: String
 		/// if the output of execution should be output (the `echo` parameter of the R command `source`)
 		public let echo: Bool
+		/// should this command override the global watch settings
+		public let watchVariables: Bool
 		
 		/// Create a set of parameters to execute a file
 		///
@@ -126,13 +128,14 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		///   - transactionId: a unique value to associate results to this command. Defaults to a new UUID
 		///   - range: the range of lines to execute. Defaults to nil (all lines)
 		///   - echo: should the output be echoed
-		public init(file: File, transactionId: String = UUID().uuidString, range: CountableClosedRange<Int>? = nil, echo: Bool = true)
+		public init(file: File, transactionId: String = UUID().uuidString, range: CountableClosedRange<Int>? = nil, echo: Bool = true, watchVariables: Bool = false)
 		{
 			self.fileId = file.id
 			self.fileVersion = file.version
 			self.transactionId = transactionId
 			self.lineRange = range
 			self.echo = echo
+			self.watchVariables = watchVariables
 		}
 }
 	
@@ -146,19 +149,22 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		public let isUserInitiated: Bool
 		/// the context (file) this command refers to
 		public let contextId: Int?
-		
+		/// should this command override the global watch settings
+		public let watchVariables: Bool
+
 		/// Create a a set of execution parameters
 		///
 		/// - Parameters:
 		///   - sourceCode: the code to execute
 		///   - transactionId: a unique value to associate responses with this command
 		///   - userInitiated: if false, no output or record of this code should be saved
-		public init(sourceCode: String, transactionId: String = UUID().uuidString, userInitiated: Bool = true, contextId: Int?)
+		public init(sourceCode: String, transactionId: String = UUID().uuidString, userInitiated: Bool = true, contextId: Int?, watchVariables: Bool  = false)
 		{
 			self.source = sourceCode
 			self.transactionId = transactionId
 			self.isUserInitiated = userInitiated
 			self.contextId = contextId
+			self.watchVariables = watchVariables
 		}
 	}
 	
