@@ -14,6 +14,7 @@ public enum SessionError: RawRepresentable, Error, Codable, Equatable {
 	case fileVersionMismatch
 	case databaseUpdateFailed
 	case failedToConnectToCompute
+	case computeConnectionClosed
 	case invalidRequest
 	case permissionDenied
 	case encoding
@@ -28,6 +29,7 @@ public enum SessionError: RawRepresentable, Error, Codable, Equatable {
 			case "fileVersionMismatch": self = .fileVersionMismatch
 			case "databaseUpdateFailed": self = .databaseUpdateFailed
 			case "failedToConnectToCompute": self = .failedToConnectToCompute
+			case "computeConnectionClosed": self = .computeConnectionClosed
 			case "invalidRequest": self = .invalidRequest
 			case "permissionDenied": self = .permissionDenied
 			case "encoding": self = .encoding
@@ -44,6 +46,7 @@ public enum SessionError: RawRepresentable, Error, Codable, Equatable {
 		case .fileVersionMismatch: return "fileVersionMismatch"
 		case .databaseUpdateFailed: return "databaseUpdateFailed"
 		case .failedToConnectToCompute: return "failedToConnectToCompute"
+		case .computeConnectionClosed: return "computeConnectionClosed"
 		case .invalidRequest: return "invalidRequest"
 		case .permissionDenied: return "permissionDenied"
 		case .encoding: return "encoding"
