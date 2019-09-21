@@ -250,10 +250,12 @@ public enum SessionResponse: Codable {
 	public struct ErrorData: Codable, Equatable {
 		public let transactionId: String?
 		public let error: SessionError
+		public let details: String?
 
-		public init(transactionId: String?, error: SessionError) {
+		public init(transactionId: String?, error: SessionError, details: String? = nil) {
 			self.transactionId = transactionId
 			self.error = error
+			self.details = details
 		}
 	}
 	
