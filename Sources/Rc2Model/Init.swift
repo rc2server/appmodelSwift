@@ -8,5 +8,5 @@
 import Foundation
 import Logging
 
-internal let modelLog = Logger(label: "io.rc2.appmdoel")
+internal let modelLog = Logger(label: "io.rc2.appmodel")
 

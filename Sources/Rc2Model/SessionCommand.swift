@@ -77,6 +77,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		} else if let envId = try? container.decode(Int.self, forKey: .clearEnvironment) {
 			self = .clearEnvironment(envId)
 		} else {
+			modelLog.warning("failed to parse a SessionCommand")
 			throw SessionError.decoding
 		}
 	}
