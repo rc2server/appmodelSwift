@@ -9,6 +9,7 @@ import Foundation
 public enum SessionResponse: Codable {
 	case computeStatus(ComputeStatus)
 	case connected(BulkUserInfo)
+	case closed(CloseData)
 	case echoExecute(ExecuteData)
 	case echoExecuteFile(ExecuteFileData)
 	case error(ErrorData)
@@ -26,6 +27,7 @@ public enum SessionResponse: Codable {
 	private enum CodingKeys: String, CodingKey {
 		case computeStatus
 		case connected
+		case closed
 		case echoExecute
 		case echoExecuteFile
 		case codedError
@@ -47,6 +49,8 @@ public enum SessionResponse: Codable {
 			self = .echoExecute(data)
 		} else if let data = try? container.decode(ExecuteFileData.self, forKey: .echoExecuteFile) {
 			self = .echoExecuteFile(data)
+		} else if let data = try? container.decode(CloseData.self, forKey: .closed) {
+			self = .closed(data)
 		} else if let data = try? container.decode(ErrorData.self, forKey: .codedError) {
 			self = .error(data)
 		} else if let data = try? container.decode(ExecCompleteData.self, forKey: .execComplete) {
@@ -83,6 +87,8 @@ public enum SessionResponse: Codable {
 		switch self {
 		case .connected(let bulkInfo):
 			try container.encode(bulkInfo, forKey: .connected)
+		case .closed(let closeData):
+			try container.encode(closeData, forKey: .closed)
 		case .echoExecute(let execParams):
 			try container.encode(execParams, forKey: .echoExecute)
 		case .echoExecuteFile(let data):
@@ -125,6 +131,20 @@ public enum SessionResponse: Codable {
 		case reconnecting
 		/// failed to connect and not likely to happen in the next few minutes. Try again later.
 		case failed
+	}
+	
+	public struct CloseData: Codable, Equatable {
+		public enum CloseReason: String, Codable, CaseIterable {
+			case computeClosed
+			case unknown
+		}
+		public let reason: CloseReason
+		public let details: String?
+		
+		public init(reason: CloseReason, details: String? = nil) {
+			self.reason = reason
+			self.details = details
+		}
 	}
 	
 	public struct ExecuteData: Codable, Equatable {
@@ -317,6 +337,8 @@ extension SessionResponse: CustomStringConvertible {
 		switch self {
 		case .connected(_):
 			return "connected"
+		case .closed(_):
+			return "closed"
 		case .echoExecute(_):
 			return "echo execute"
 		case .echoExecuteFile(let data):
