@@ -23,6 +23,7 @@ public enum SessionResponse: Codable {
 	case showOutput(ShowOutputData)
 	case variableValue(VariableValueData)
 	case variables(ListVariablesData)
+	case environmentCreated(CreatedEnvironment)
 	
 	private enum CodingKeys: String, CodingKey {
 		case computeStatus
@@ -41,6 +42,7 @@ public enum SessionResponse: Codable {
 		case showOutput
 		case variables
 		case variableValue
+		case environmentCreated
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -77,6 +79,8 @@ public enum SessionResponse: Codable {
 			self = .variableValue(data)
 		} else if let status = try? container.decode(ComputeStatus.self, forKey: .computeStatus) {
 			self = .computeStatus(status)
+		} else if let data = try? container.decode(CreatedEnvironment.self, forKey: .environmentCreated) {
+			self = .environmentCreated(data)
 		} else {
 			throw SessionError.decoding
 		}
@@ -117,6 +121,8 @@ public enum SessionResponse: Codable {
 			try container.encode(data, forKey: .variableValue)
 		case .computeStatus(let status):
 			try container.encode(status, forKey: .computeStatus)
+		case .environmentCreated(let data):
+			try container.encode(data, forKey: .environmentCreated)
 		}
 	}
 	
@@ -329,6 +335,11 @@ public enum SessionResponse: Codable {
 			self.contextId = contextId
 		}
 	}
+	
+	public struct CreatedEnvironment: Codable, Hashable {
+		public let transactionId: String
+		public let environmentId: Int
+	}
 }
 
 // MARK: - CustomStringConvertible
@@ -367,6 +378,8 @@ extension SessionResponse: CustomStringConvertible {
 			return "single variable"
 		case .computeStatus(let status):
 			return "compute status update: \(status)"
+		case .environmentCreated(_):
+			return "created environment"
 		}
 	}
 }

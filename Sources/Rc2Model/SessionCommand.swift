@@ -18,6 +18,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		case save
 		case watchVariables
 		case clearEnvironment
+		case createEnvironment
 	}
 	
 	case executeFile(ExecuteFileParams)
@@ -31,6 +32,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 	case clearEnvironment(Int)
 	/// if true, send all values. Even if was already true
 	case watchVariables(WatchVariablesParams)
+	/// argument is the transaction Id that will be in the matching result
+	case createEnvironment(String)
 
 	public var description: String {
 		switch self {
@@ -51,7 +54,9 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		case .watchVariables(let turnon):
 			return "watchVariables \(turnon)"
 		case .clearEnvironment(let envId):
-			return "clear Environment(\(envId))"
+			return "clear environment(\(envId))"
+		case .createEnvironment(_):
+			return "create environment"
 		}
 	}
 	
@@ -76,6 +81,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 			self = .watchVariables(enable)
 		} else if let envId = try? container.decode(Int.self, forKey: .clearEnvironment) {
 			self = .clearEnvironment(envId)
+		} else if let transId = try? container.decode(String.self, forKey: .createEnvironment) {
+			self = .createEnvironment(transId)
 		} else {
 			modelLog.warning("failed to parse a SessionCommand")
 			throw SessionError.decoding
@@ -104,6 +111,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 				try container.encode(enable, forKey: .watchVariables)
 			case .clearEnvironment(let envId):
 				try container.encode(envId, forKey: .clearEnvironment)
+			case .createEnvironment(let transId):
+				try container.encode(transId, forKey: .createEnvironment)
 		}
 	}
 
