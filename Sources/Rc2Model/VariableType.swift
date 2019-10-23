@@ -27,10 +27,12 @@ public enum VariableType: Codable, Equatable {
 	case environment
 	case function(String)
 	case s4Object
+	case symbol(String)
+	case pairlist(RPairList)
 	
 	func isContainer() -> Bool {
 		switch self {
-		case .array, .dataFrame, .matrix, .list(_), .environment:
+		case .array, .dataFrame, .matrix, .list(_), .environment, .pairlist(_):
 			return true
 		default:
 			return false
@@ -60,6 +62,8 @@ public enum VariableType: Codable, Equatable {
 		case function
 		case s4Object
 		case rawType
+		case symbol
+		case pairlist
 	}
 	
 	/// implementation of Decodable
@@ -98,6 +102,10 @@ public enum VariableType: Codable, Equatable {
 				self = .function(try container.decode(String.self, forKey: .function))
 			case .s4Object:
 				self = .s4Object
+			case .symbol:
+				self = .symbol(try container.decode(String.self, forKey: .symbol))
+			case .pairlist:
+				self = .pairlist(try container.decode(RPairList.self, forKey: .pairlist))
 			default:
 				throw Errors.invalidType
 			}
@@ -148,6 +156,12 @@ public enum VariableType: Codable, Equatable {
 		case .s4Object:
 			try container.encode(CodingKeys.s4Object.rawValue, forKey: .rawType)
 			try container.encode(true, forKey: .s4Object)
+		case .symbol(let name):
+			try container.encode(CodingKeys.symbol.rawValue, forKey: .rawType)
+			try container.encode(name, forKey: .symbol)
+		case .pairlist(let plist):
+			try container.encode(CodingKeys.pairlist.rawValue, forKey: .rawType)
+			try container.encode(plist, forKey: .pairlist)
 		}
 	}
 
@@ -182,6 +196,10 @@ public enum VariableType: Codable, Equatable {
 			return b1 == b2
 		case (.s4Object, .s4Object):
 			return true
+		case (.symbol(let s1), .symbol(let s2)):
+			return s1 == s2
+		case (.pairlist(let p1), .pairlist(let p2)):
+			return p1 == p2
 		default:
 			return false
 		}
@@ -226,5 +244,59 @@ public struct MatrixData: Codable {
 		self.colCount = colCount
 		self.colNames = colNames
 		self.rowNames = rowNames
+	}
+}
+
+/// a pair of name and value that is stored in an R pairList
+public struct RPair: Codable, Equatable {
+	public let key: String
+	public let value: Variable
+}
+
+/// Representation of an R pairlist
+public struct RPairList: Collection, Codable, Equatable, ExpressibleByArrayLiteral {
+
+	public init(arrayLiteral elements: RPair...) {
+		_values = elements
+	}
+	
+	public typealias ArrayLiteralElement = RPair
+	
+	public typealias Index = Int
+	public typealias Element = RPair
+	
+	private var _values: [RPair] = []
+	
+	public var startIndex: RPairList.Index { return 0 }
+	public var endIndex: RPairList.Index { return _values.count }
+	
+	public func index(after i: RPairList.Index) -> RPairList.Index {
+		return i + 1
+	}
+	
+	public subscript(position: RPairList.Index) -> RPairList.Element {
+		precondition(position >= 0 && position < _values.count, "invalid index")
+		return _values[position]
+	}
+	
+	/// Find a Pair by name. This is 0(n), complexity,  not 0(1).
+	public subscript(_ key: String) -> Element? {
+		return _values.first(where: { $0.key == key })
+	}
+	
+	public func makeIterator() -> RPairList.Iterator {
+		return (Iterator(values: _values))
+	}
+	
+	/// Iterator for a PairList
+	public struct Iterator: IteratorProtocol {
+		public typealias Element = RPair
+		var idx: Int = 0
+		let values: [Element]
+				
+		public mutating func next() -> RPairList.Iterator.Element? {
+			defer { idx += 1 }
+			return idx < values.count ? values[idx] : nil
+		}
 	}
 }
