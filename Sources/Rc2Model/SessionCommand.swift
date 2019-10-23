@@ -158,7 +158,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		/// true if this is being executed by the user, or false if this is an internal command that should not be visible to the user
 		public let isUserInitiated: Bool
 		/// the context (file) this command refers to
-		public let contextId: Int?
+		public let environmentId: Int?
 		/// should this command override the global watch settings
 		public let watchVariables: Bool
 
@@ -168,12 +168,12 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		///   - sourceCode: the code to execute
 		///   - transactionId: a unique value to associate responses with this command
 		///   - userInitiated: if false, no output or record of this code should be saved
-		public init(sourceCode: String, transactionId: String = UUID().uuidString, userInitiated: Bool = true, contextId: Int?, watchVariables: Bool  = false)
+		public init(sourceCode: String, transactionId: String = UUID().uuidString, userInitiated: Bool = true, environmentId: Int?, watchVariables: Bool  = false)
 		{
 			self.source = sourceCode
 			self.transactionId = transactionId
 			self.isUserInitiated = userInitiated
-			self.contextId = contextId
+			self.environmentId = environmentId
 			self.watchVariables = watchVariables
 		}
 	}
@@ -182,16 +182,16 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		/// the name of the variable to get
 		public let name: String
 		/// the context to search for this variable. nil means search the global environment
-		public let contextId: Int?
+		public let environmentId: Int?
 		
 		/// Create a set of variable parameters
 		///
 		/// - Parameters:
 		///   - name: the name of the variable
-		///   - contextId: the id of the context to search
-		public init(name: String, contextId: Int?) {
+		///   - environmentId: the id of the context to search
+		public init(name: String, environmentId: Int?) {
 			self.name = name
-			self.contextId = contextId
+			self.environmentId = environmentId
 		}
 	}
 	
@@ -199,16 +199,16 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		/// should watching be enabled or disabled
 		public let watch: Bool
 		/// the context to search for this variable. nil means search the global environment
-		public let contextId: Int?
+		public let environmentId: Int?
 		
 		/// creates a struct of parameters
 		///
 		/// - Parameters:
 		///   - watch: enable/disable watching of variables
-		///   - contextId: the id of the context to search
-		public init(watch: Bool, contextId: Int?) {
+		///   - environmentId: the id of the context to search
+		public init(watch: Bool, environmentId: Int?) {
 			self.watch = watch
-			self.contextId = contextId
+			self.environmentId = environmentId
 		}
 	}
 	/// Parameters to save content of a file

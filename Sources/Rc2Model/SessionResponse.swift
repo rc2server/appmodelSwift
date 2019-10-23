@@ -156,12 +156,12 @@ public enum SessionResponse: Codable {
 	public struct ExecuteData: Codable, Equatable {
 		public let transactionId: String
 		public let source: String
-		public let contextId: Int?
+		public let environmentId: Int?
 		
-		public init(transactionId: String, source: String, contextId: Int?) {
+		public init(transactionId: String, source: String, environmentId: Int?) {
 			self.transactionId = transactionId
 			self.source = source
-			self.contextId = contextId
+			self.environmentId = environmentId
 		}
 	}
 
@@ -314,25 +314,25 @@ public enum SessionResponse: Codable {
 	
 	public struct VariableValueData: Codable, Equatable {
 		public let value: Variable
-		public let contextId: Int?
+		public let environmentId: Int?
 		
-		public init(value: Variable, contextId: Int?) {
+		public init(value: Variable, environmentId: Int?) {
 			self.value = value
-			self.contextId = contextId
+			self.environmentId = environmentId
 		}
 	}
 	
 	public struct ListVariablesData: Codable, Equatable {
 		public let variables: [String: Variable]
 		public let removed: [String]
-		public let contextId: Int?
+		public let environmentId: Int?
 		public let delta: Bool
 		
-		public init(values: [String: Variable], removed: [String], contextId: Int?, delta: Bool) {
+		public init(values: [String: Variable], removed: [String], environmentId: Int?, delta: Bool) {
 			self.variables = values
 			self.delta = delta
 			self.removed = removed
-			self.contextId = contextId
+			self.environmentId = environmentId
 		}
 	}
 	
