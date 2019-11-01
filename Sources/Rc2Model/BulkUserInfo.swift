@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct BulkUserInfo: Codable, Equatable {
+public struct BulkUserInfo: Codable, Hashable {
 	/// the user in question
 	public let user: User
 	/// array of user's projects

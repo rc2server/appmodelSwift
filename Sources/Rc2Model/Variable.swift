@@ -6,7 +6,7 @@
 
 import Foundation
 
-open class Variable: Codable, Equatable, CustomStringConvertible {
+open class Variable: Codable, Hashable, CustomStringConvertible {
 	public let name: String
 	public let length: Int
 	public let type: VariableType
@@ -23,6 +23,14 @@ open class Variable: Codable, Equatable, CustomStringConvertible {
 		_summary = summary.count > 0 ? summary: nil
 	}
 
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(name)
+		hasher.combine(length)
+		hasher.combine(type)
+		hasher.combine(classNameR)
+		hasher.combine(_summary)
+	}
+	
 	/// a string representation of the value for display. e.g. for a factor, the name and number of possible values
 	public var description: String { return "\(classNameR)[\(length)]" }
 	

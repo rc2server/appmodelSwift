@@ -8,7 +8,7 @@ import Foundation
 
 /// The possible primitive value types
 ///
-public enum PrimitiveValue: Codable, Equatable, CustomStringConvertible {
+public enum PrimitiveValue: Codable, Hashable, CustomStringConvertible {
 	case boolean([Bool?])
 	case integer([Int?])
 	case double([Double?])

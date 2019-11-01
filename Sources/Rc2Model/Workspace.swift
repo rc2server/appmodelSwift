@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct Workspace: Codable, Equatable {
+public struct Workspace: Codable, Hashable {
 	public let id: Int
 	public let version: Int
 	public let name: String

@@ -8,7 +8,7 @@ import Foundation
 import Logging
 
 /// possible variable types
-public enum VariableType: Codable, Equatable {
+public enum VariableType: Codable, Hashable {
 	/// an unknown/unsupported variable
 	case unknown
 	/// a variable whose .primitiveType will be set to a valid value
@@ -207,9 +207,9 @@ public enum VariableType: Codable, Equatable {
 }
 
 /// value representing the data necessary to describe a DataFrame
-public struct DataFrameData: Codable, Equatable {
+public struct DataFrameData: Codable, Hashable {
 	/// data describing a column in a DataFrame
-	public struct Column: Codable, Equatable {
+	public struct Column: Codable, Hashable {
 		public let name: String
 		public let value: PrimitiveValue
 
@@ -231,7 +231,7 @@ public struct DataFrameData: Codable, Equatable {
 }
 
 /// value representing the data necessary to describe a Matrix
-public struct MatrixData: Codable {
+public struct MatrixData: Codable, Hashable {
 	public let value: PrimitiveValue
 	public let rowCount: Int
 	public let colCount: Int
@@ -248,13 +248,13 @@ public struct MatrixData: Codable {
 }
 
 /// a pair of name and value that is stored in an R pairList
-public struct RPair: Codable, Equatable {
+public struct RPair: Codable, Hashable {
 	public let key: String
 	public let value: Variable
 }
 
 /// Representation of an R pairlist
-public struct RPairList: Collection, Codable, Equatable, ExpressibleByArrayLiteral {
+public struct RPairList: Collection, Codable, Hashable, ExpressibleByArrayLiteral {
 
 	public init(arrayLiteral elements: RPair...) {
 		_values = elements

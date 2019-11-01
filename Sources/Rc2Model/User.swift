@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct User: Codable, Equatable, CustomDebugStringConvertible {
+public struct User: Codable, Hashable, CustomDebugStringConvertible {
 	public let id: Int
 	public let version: Int
 	public let login: String

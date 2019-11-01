@@ -6,7 +6,7 @@
 
 import Foundation
 
-public struct FileType: Codable, Equatable {
+public struct FileType: Codable, Hashable {
 	public let name: String
 	public let fileExtension: String
 	public let uti: String

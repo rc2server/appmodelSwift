@@ -26,7 +26,7 @@ public struct SessionImage: Codable {
 	}
 }
 
-extension SessionImage: Equatable {
+extension SessionImage: Hashable {
 	public static func == (lhs: SessionImage, rhs: SessionImage) -> Bool {
 		return lhs.id == rhs.id
 	}

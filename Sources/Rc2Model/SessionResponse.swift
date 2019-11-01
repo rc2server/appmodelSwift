@@ -139,7 +139,7 @@ public enum SessionResponse: Codable {
 		case failed
 	}
 	
-	public struct CloseData: Codable, Equatable {
+	public struct CloseData: Codable, Hashable {
 		public enum CloseReason: String, Codable, CaseIterable {
 			case computeClosed
 			case unknown
@@ -153,7 +153,7 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
-	public struct ExecuteData: Codable, Equatable {
+	public struct ExecuteData: Codable, Hashable {
 		public let transactionId: String
 		public let source: String
 		public let environmentId: Int?
@@ -165,7 +165,7 @@ public enum SessionResponse: Codable {
 		}
 	}
 
-	public struct ExecuteFileData: Codable, Equatable {
+	public struct ExecuteFileData: Codable, Hashable {
 		public let transactionId: String
 		public let fileId: Int
 		public let fileVersion: Int
@@ -177,7 +177,7 @@ public enum SessionResponse: Codable {
 		}
 	}
 
-	public struct ExecCompleteData: Codable, Equatable {
+	public struct ExecCompleteData: Codable, Hashable {
 		public let transactionId: String
 		public let batchId: Int
 		public let expectShowOutput: Bool
@@ -191,7 +191,7 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
-	public struct FileChangedData: Codable, Equatable, CustomStringConvertible {
+	public struct FileChangedData: Codable, Hashable, CustomStringConvertible {
 		public enum FileChangeType: String, Codable {
 			case insert = "i"
 			case update = "u"
@@ -213,7 +213,7 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
-	public struct FileOperationData: Codable, Equatable {
+	public struct FileOperationData: Codable, Hashable {
 		public let transactionId: String
 		public let operation: FileOperation
 		public let success: Bool
@@ -237,7 +237,7 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
-	public struct HelpData: Codable, Equatable, CustomStringConvertible {
+	public struct HelpData: Codable, Hashable, CustomStringConvertible {
 		public let topic: String
 		public let items: [String: String]
 		
@@ -251,7 +251,7 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
-	public struct InfoData: Codable, Equatable {
+	public struct InfoData: Codable, Hashable {
 		public let workspace: Workspace
 		public let files: [File]
 		
@@ -261,7 +261,7 @@ public enum SessionResponse: Codable {
 		}
 	}
 
-	public struct ResultsData: Codable, Equatable {
+	public struct ResultsData: Codable, Hashable {
 		public let transactionId: String
 		public let output: String
 		public let isStdErr: Bool
@@ -273,7 +273,7 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
-	public struct ErrorData: Codable, Equatable {
+	public struct ErrorData: Codable, Hashable {
 		public let transactionId: String?
 		public let error: SessionError
 		public let details: String?
@@ -285,7 +285,7 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
-	public struct SaveData: Codable, Equatable {
+	public struct SaveData: Codable, Hashable {
 		public let transactionId: String
 		public let success: Bool
 		public let file: File?
@@ -299,7 +299,7 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
-	public struct ShowOutputData: Codable, Equatable {
+	public struct ShowOutputData: Codable, Hashable {
 		public let transactionId: String
 		public let file: File
 		/// if nil, the client should fetch the file via REST
@@ -312,7 +312,7 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
-	public struct VariableValueData: Codable, Equatable {
+	public struct VariableValueData: Codable, Hashable {
 		public let value: Variable
 		public let environmentId: Int?
 		
@@ -322,7 +322,7 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
-	public struct ListVariablesData: Codable, Equatable {
+	public struct ListVariablesData: Codable, Hashable {
 		public let variables: [String: Variable]
 		public let removed: [String]
 		public let environmentId: Int?

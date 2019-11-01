@@ -7,7 +7,7 @@
 import Foundation
 
 /// a command that can be sent to the server
-public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
+public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 	private enum CodingKeys: String, CodingKey {
 		case executeFile
 		case execute
@@ -117,7 +117,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 	}
 
 	/// Parameters to execute a file
-	public struct ExecuteFileParams: Codable, Equatable {
+	public struct ExecuteFileParams: Codable, Hashable {
 		/// the id of the File to execute
 		public let fileId: Int
 		/// the latest known version of the File. An error will be generated if this does not match the version on the server
@@ -150,7 +150,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 }
 	
 	/// Parameters to execute arbitrary code
-	public struct ExecuteParams: Codable, Equatable {
+	public struct ExecuteParams: Codable, Hashable {
 		/// the code to execute
 		public let source: String
 		/// a unique, client-specified identifier for this command to allow matching results to it
@@ -178,7 +178,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		}
 	}
 	
-	public struct VariableParams: Codable, Equatable {
+	public struct VariableParams: Codable, Hashable {
 		/// the name of the variable to get
 		public let name: String
 		/// the context to search for this variable. nil means search the global environment
@@ -195,7 +195,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		}
 	}
 	
-	public struct WatchVariablesParams: Codable, Equatable {
+	public struct WatchVariablesParams: Codable, Hashable {
 		/// should watching be enabled or disabled
 		public let watch: Bool
 		/// the context to search for this variable. nil means search the global environment
@@ -212,7 +212,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 		}
 	}
 	/// Parameters to save content of a file
-	public struct SaveParams: Codable, Equatable {
+	public struct SaveParams: Codable, Hashable {
 		/// a unique, client-specified identifier for this command to allow matching results to it
 		public let transactionId: String
 		/// the id of the File to execute
@@ -238,7 +238,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Equatable {
 	}
 	
 	/// Parameters to perform an operation on a file
-	public struct FileOperationParams: Codable, Equatable {
+	public struct FileOperationParams: Codable, Hashable {
 		/// the operation to perform
 		public let operation: FileOperation
 		/// a unique, client-specified identifier for this command to allow matching results to it
