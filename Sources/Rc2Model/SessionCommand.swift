@@ -268,5 +268,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 		public let parendId: Int
 		/// a unique, client-specified identifier for this command to allow matching results to it
 		public let transactionId: String
+		/// a variable name to assign the environment to
+		public let variableName: String?
 	}
 }
