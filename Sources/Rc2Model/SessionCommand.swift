@@ -32,8 +32,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 	case clearEnvironment(Int)
 	/// if true, send all values. Even if was already true
 	case watchVariables(WatchVariablesParams)
-	/// argument is the transaction Id that will be in the matching result
-	case createEnvironment(String)
+	case createEnvironment(CreateEnvironmentParams)
 
 	public var description: String {
 		switch self {
@@ -81,8 +80,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 			self = .watchVariables(enable)
 		} else if let envId = try? container.decode(Int.self, forKey: .clearEnvironment) {
 			self = .clearEnvironment(envId)
-		} else if let transId = try? container.decode(String.self, forKey: .createEnvironment) {
-			self = .createEnvironment(transId)
+		} else if let params = try? container.decode(CreateEnvironmentParams.self, forKey: .createEnvironment) {
+			self = .createEnvironment(params)
 		} else {
 			modelLog.warning("failed to parse a SessionCommand")
 			throw SessionError.decoding
@@ -111,8 +110,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 				try container.encode(enable, forKey: .watchVariables)
 			case .clearEnvironment(let envId):
 				try container.encode(envId, forKey: .clearEnvironment)
-			case .createEnvironment(let transId):
-				try container.encode(transId, forKey: .createEnvironment)
+			case .createEnvironment(let params):
+				try container.encode(params, forKey: .createEnvironment)
 		}
 	}
 
@@ -261,5 +260,13 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 			self.operation = operation
 			self.newName = newName
 		}
+	}
+	
+	/// Parameters to create an environment
+	public struct CreateEnvironmentParams: Codable, Hashable {
+		/// The id of the parent environment. Zero means the global enviroment
+		public let parendId: Int
+		/// a unique, client-specified identifier for this command to allow matching results to it
+		public let transactionId: String
 	}
 }

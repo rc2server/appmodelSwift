@@ -339,6 +339,11 @@ public enum SessionResponse: Codable {
 	public struct CreatedEnvironment: Codable, Hashable {
 		public let transactionId: String
 		public let environmentId: Int
+		
+		public init(transactionId: String, environmentId: Int) {
+			self.transactionId = transactionId
+			self.environmentId = environmentId
+		}
 	}
 }
 
