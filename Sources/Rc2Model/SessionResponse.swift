@@ -24,6 +24,9 @@ public enum SessionResponse: Codable {
 	case variableValue(VariableValueData)
 	case variables(ListVariablesData)
 	case environmentCreated(CreatedEnvironment)
+	/// param is thbe newly created previewId
+	case previewInitialized(Int)
+	case previewUpdate(PreivewUpdateData)
 	
 	private enum CodingKeys: String, CodingKey {
 		case computeStatus
@@ -43,6 +46,8 @@ public enum SessionResponse: Codable {
 		case variables
 		case variableValue
 		case environmentCreated
+		case previewInitialized
+		case previewUpdate
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -123,6 +128,10 @@ public enum SessionResponse: Codable {
 			try container.encode(status, forKey: .computeStatus)
 		case .environmentCreated(let data):
 			try container.encode(data, forKey: .environmentCreated)
+		case .previewInitialized(let previewId):
+			try container.encode(previewId, forKey: .previewInitialized);
+		case .previewUpdate(let updateData):
+			try container.encode(updateData, forKey: .previewUpdate)
 		}
 	}
 	
@@ -345,6 +354,12 @@ public enum SessionResponse: Codable {
 			self.environmentId = environmentId
 		}
 	}
+	
+	public struct PreivewUpdateData: Codable, Hashable {
+		let previewId: Int
+		let chunkId: Int
+		let results: String
+	}
 }
 
 // MARK: - CustomStringConvertible
@@ -385,6 +400,10 @@ extension SessionResponse: CustomStringConvertible {
 			return "compute status update: \(status)"
 		case .environmentCreated(_):
 			return "created environment"
+		case .previewUpdate(let updata):
+			return "preview \(updata.previewId) update: \(updata.chunkId)"
+		case .previewInitialized(let previewId):
+			return "preview initialized \(previewId)"
 		}
 	}
 }

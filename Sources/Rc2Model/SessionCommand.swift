@@ -19,6 +19,9 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 		case watchVariables
 		case clearEnvironment
 		case createEnvironment
+		case initPreview
+		case updatePreview
+		case removePreview
 	}
 	
 	case executeFile(ExecuteFileParams)
@@ -33,6 +36,12 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 	/// if true, send all values. Even if was already true
 	case watchVariables(WatchVariablesParams)
 	case createEnvironment(CreateEnvironmentParams)
+	/// parameter is the fileId
+	case initPreview(Int)
+	/// update the results of code Chunks
+	case updatePreview(UpdatePreviewParams)
+	/// parramater is the previewId from the initPreview response
+	case removePreview(Int)
 
 	public var description: String {
 		switch self {
@@ -56,6 +65,12 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 			return "clear environment(\(envId))"
 		case .createEnvironment(_):
 			return "create environment"
+		case .initPreview(let fileId):
+			return "initPreview \(fileId)"
+		case .updatePreview(let upData):
+			return "updatePreview \(upData.previewId)/\(upData.chunkId)"
+		case.removePreview(let previewId):
+			return "removePreview \(previewId)"
 		}
 	}
 	
@@ -82,6 +97,12 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 			self = .clearEnvironment(envId)
 		} else if let params = try? container.decode(CreateEnvironmentParams.self, forKey: .createEnvironment) {
 			self = .createEnvironment(params)
+		} else if let fileId = try? container.decode(Int.self, forKey: .initPreview) {
+			self = .initPreview(fileId)
+		} else if let updateData = try? container.decode(UpdatePreviewParams.self, forKey: .updatePreview) {
+			self = .updatePreview(updateData)
+		} else if let previewId = try? container.decode(Int.self, forKey: .removePreview) {
+			self = .removePreview(previewId)
 		} else {
 			modelLog.warning("failed to parse a SessionCommand")
 			throw SessionError.decoding
@@ -112,6 +133,12 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 				try container.encode(envId, forKey: .clearEnvironment)
 			case .createEnvironment(let params):
 				try container.encode(params, forKey: .createEnvironment)
+			case .initPreview(let fileId):
+				try container.encode(fileId, forKey: .initPreview)
+			case .updatePreview(let updateData):
+				try container.encode(updateData, forKey: .updatePreview);
+			case .removePreview(let previewId):
+				try container.encode(previewId, forKey: .removePreview)
 		}
 	}
 
@@ -270,5 +297,15 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 		public let transactionId: String
 		/// a variable name to assign the environment to
 		public let variableName: String?
+	}
+	
+	/// parameters to execute a chunk, and optionally, all chunks preceding it
+	public struct UpdatePreviewParams: Codable, Hashable {
+		/// id of the preview created by .initPreview
+		let previewId: Int
+		/// chunk number to execute
+		let chunkId: Int
+		/// true if all previous chunks should be executed
+		let includePrevious: Bool
 	}
 }
