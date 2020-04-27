@@ -25,7 +25,7 @@ public enum SessionResponse: Codable {
 	case variables(ListVariablesData)
 	case environmentCreated(CreatedEnvironment)
 	/// param is thbe newly created previewId
-	case previewInitialized(Int)
+	case previewInitialized(PreviewInitedData)
 	case previewUpdate(PreivewUpdateData)
 	
 	private enum CodingKeys: String, CodingKey {
@@ -355,10 +355,28 @@ public enum SessionResponse: Codable {
 		}
 	}
 	
+	public struct PreviewInitedData: Codable, Hashable {
+		public let previewId: Int
+		
+		public init(previewId: Int) {
+			self.previewId = previewId
+		}
+	}
+	
 	public struct PreivewUpdateData: Codable, Hashable {
-		let previewId: Int
-		let chunkId: Int
-		let results: String
+		public let previewId: Int
+		public let chunkId: Int
+		public let uniqueIdentifier: String
+		public let results: String
+		public let updateComplete: Bool
+	
+		public init(previewId: Int, chunkId: Int, uniqueIdentifier: String, results: String, updateComplete: Bool) {
+			self.previewId = previewId
+			self.chunkId = chunkId
+			self.results = results
+			self.updateComplete = updateComplete
+			self.uniqueIdentifier = uniqueIdentifier
+		}
 	}
 }
 
@@ -402,8 +420,8 @@ extension SessionResponse: CustomStringConvertible {
 			return "created environment"
 		case .previewUpdate(let updata):
 			return "preview \(updata.previewId) update: \(updata.chunkId)"
-		case .previewInitialized(let previewId):
-			return "preview initialized \(previewId)"
+		case .previewInitialized(let initeeData):
+			return "preview initialized \(initeeData.previewId)"
 		}
 	}
 }

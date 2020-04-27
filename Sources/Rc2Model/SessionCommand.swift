@@ -302,10 +302,12 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 	/// parameters to execute a chunk, and optionally, all chunks preceding it
 	public struct UpdatePreviewParams: Codable, Hashable {
 		/// id of the preview created by .initPreview
-		let previewId: Int
+		public let previewId: Int
 		/// chunk number to execute
-		let chunkId: Int
+		public let chunkId: Int
 		/// true if all previous chunks should be executed
-		let includePrevious: Bool
+		public let includePrevious: Bool
+		/// unique id to group updates to a single udpate command
+		public let updateIdentifier: String
 	}
 }
