@@ -357,9 +357,11 @@ public enum SessionResponse: Codable {
 	
 	public struct PreviewInitedData: Codable, Hashable {
 		public let previewId: Int
+		public let errorCode: Int
 		
-		public init(previewId: Int) {
+		public init(previewId: Int, errorCode: Int = 0) {
 			self.previewId = previewId
+			self.errorCode = errorCode
 		}
 	}
 	
