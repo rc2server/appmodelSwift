@@ -68,7 +68,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 		case .initPreview(let fileId):
 			return "initPreview \(fileId)"
 		case .updatePreview(let upData):
-			return "updatePreview \(upData.previewId)/\(upData.chunkId)"
+			return "updatePreview \(upData.previewId)/\(String(upData.chunkId ?? 0) ?? "all")"
 		case.removePreview(let previewId):
 			return "removePreview \(previewId)"
 		}
@@ -304,7 +304,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 		/// id of the preview created by .initPreview
 		public let previewId: Int
 		/// chunk number to execute
-		public let chunkId: Int
+		public let chunkId: Int?
 		/// true if all previous chunks should be executed
 		public let includePrevious: Bool
 		/// unique id to group updates to a single udpate command

@@ -367,12 +367,12 @@ public enum SessionResponse: Codable {
 	
 	public struct PreivewUpdateData: Codable, Hashable {
 		public let previewId: Int
-		public let chunkId: Int
+		public let chunkId: Int?
 		public let uniqueIdentifier: String
 		public let results: String
 		public let updateComplete: Bool
 	
-		public init(previewId: Int, chunkId: Int, uniqueIdentifier: String, results: String, updateComplete: Bool) {
+		public init(previewId: Int, chunkId: Int?, uniqueIdentifier: String, results: String, updateComplete: Bool) {
 			self.previewId = previewId
 			self.chunkId = chunkId
 			self.results = results
@@ -421,7 +421,7 @@ extension SessionResponse: CustomStringConvertible {
 		case .environmentCreated(_):
 			return "created environment"
 		case .previewUpdate(let updata):
-			return "preview \(updata.previewId) update: \(updata.chunkId)"
+			return "preview \(updata.previewId) update: \(updata.chunkId != nil ? String(updata.chunkId!) : "all")"
 		case .previewInitialized(let initeeData):
 			return "preview initialized \(initeeData.previewId)"
 		}
