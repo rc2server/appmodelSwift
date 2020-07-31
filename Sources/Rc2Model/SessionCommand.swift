@@ -68,7 +68,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 		case .initPreview(let fileId):
 			return "initPreview \(fileId)"
 		case .updatePreview(let upData):
-			return "updatePreview \(upData.previewId)/\(String(upData.chunkId ?? 0) ?? "all")"
+			return "updatePreview \(upData.previewId)/\(upData)"
 		case.removePreview(let previewId):
 			return "removePreview \(previewId)"
 		}
