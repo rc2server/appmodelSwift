@@ -7,17 +7,17 @@
 import Foundation
 
 /// An error returned via REST or WebSocket
-public enum SessionError: String, Error, Codable, Hashable {
+public enum SessionError: Int, Error, Codable, Hashable {
 	/// an unknow error happened
-	case unknown
+	case unknown = -1
 	/// the specified file was not found
-	case fileNotFound
+	case fileNotFound = 105
 	/// an attempt to edit a file that has already been changed since the edit started
-	case fileVersionMismatch
+	case fileVersionMismatch = -101
 	/// failed to insert/update/delete from the database
-	case databaseUpdateFailed
+	case databaseUpdateFailed = -102
 	/// failed to open connection to Compute Engine
-	case failedToConnectToCompute
+	case failedToConnectToCompute = 140
 	/// the Compute Engine connection was unexpectedly closed
 	case computeConnectionClosed
 	/// the request , or possibly its arguments, were invalid
@@ -31,7 +31,7 @@ public enum SessionError: String, Error, Codable, Hashable {
 	/// an error while decoding from JSON
 	case decoding
 	/// multiple objects met the requested criteria
-	case duplicate
+	case duplicate = 111
 	/// the Compute Engine reported an error
 	case compute
 }

@@ -26,7 +26,7 @@ public enum SessionResponse: Codable {
 	case environmentCreated(CreatedEnvironment)
 	/// param is thbe newly created previewId
 	case previewInitialized(PreviewInitedData)
-	case previewUpdate(PreivewUpdateData)
+	case previewUpdate(PreviewUpdateData)
 	
 	private enum CodingKeys: String, CodingKey {
 		case computeStatus
@@ -86,6 +86,10 @@ public enum SessionResponse: Codable {
 			self = .computeStatus(status)
 		} else if let data = try? container.decode(CreatedEnvironment.self, forKey: .environmentCreated) {
 			self = .environmentCreated(data)
+		} else if let data = try? container.decode(PreviewInitedData.self, forKey: .previewInitialized) {
+			self = .previewInitialized(data)
+		} else if let data = try? container.decode(PreviewUpdateData.self, forKey: .previewInitialized) {
+			self = .previewUpdate(data)
 		} else {
 			throw SessionError.decoding
 		}
@@ -358,14 +362,16 @@ public enum SessionResponse: Codable {
 	public struct PreviewInitedData: Codable, Hashable {
 		public let previewId: Int
 		public let errorCode: Int
+		public let uniqueIdentifier: String
 		
-		public init(previewId: Int, errorCode: Int = 0) {
+		public init(previewId: Int, errorCode: Int = 0, uniqueIdentifier: String) {
 			self.previewId = previewId
 			self.errorCode = errorCode
+			self.uniqueIdentifier = uniqueIdentifier
 		}
 	}
 	
-	public struct PreivewUpdateData: Codable, Hashable {
+	public struct PreviewUpdateData: Codable, Hashable {
 		public let previewId: Int
 		public let chunkId: Int
 		public let uniqueIdentifier: String

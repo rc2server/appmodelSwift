@@ -37,7 +37,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 	case watchVariables(WatchVariablesParams)
 	case createEnvironment(CreateEnvironmentParams)
 	/// parameter is the fileId
-	case initPreview(Int)
+	case initPreview(InitPreviewParams)
 	/// update the results of code Chunks
 	case updatePreview(UpdatePreviewParams)
 	/// parramater is the previewId from the initPreview response
@@ -97,8 +97,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 			self = .clearEnvironment(envId)
 		} else if let params = try? container.decode(CreateEnvironmentParams.self, forKey: .createEnvironment) {
 			self = .createEnvironment(params)
-		} else if let fileId = try? container.decode(Int.self, forKey: .initPreview) {
-			self = .initPreview(fileId)
+		} else if let params = try? container.decode(InitPreviewParams.self, forKey: .initPreview) {
+			self = .initPreview(params)
 		} else if let updateData = try? container.decode(UpdatePreviewParams.self, forKey: .updatePreview) {
 			self = .updatePreview(updateData)
 		} else if let previewId = try? container.decode(Int.self, forKey: .removePreview) {
@@ -299,6 +299,19 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 		public let variableName: String?
 	}
 	
+	/// Parameters to initialize a preview
+	public struct InitPreviewParams: Codable, Hashable {
+		/// target file of this preview
+		public let fileId: Int
+		/// identifier to match the response to the request
+		public let updateIdentifier: String
+		
+		public init(fileId: Int, updateIdentifier: String) {
+			self.fileId = fileId
+			self.updateIdentifier = updateIdentifier
+		}
+	}
+	
 	/// parameters to execute a chunk, and optionally, all chunks preceding it
 	public struct UpdatePreviewParams: Codable, Hashable {
 		/// id of the preview created by .initPreview
@@ -309,5 +322,12 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 		public let includePrevious: Bool
 		/// unique id to group updates to a single udpate command
 		public let updateIdentifier: String
+		
+		public init(previewId: Int, chunkId: Int?, includePrevious: Bool, identifier: String = UUID().uuidString) {
+			self.previewId = previewId
+			self.chunkId = chunkId
+			self.includePrevious = includePrevious
+			self.updateIdentifier = identifier
+		}
 	}
 }
