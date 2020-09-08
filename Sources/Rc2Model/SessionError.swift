@@ -7,7 +7,7 @@
 import Foundation
 
 /// An error returned via REST or WebSocket
-public enum SessionError: Int, Error, Codable, Hashable {
+public enum SessionError: Int, Error, Codable, Hashable, CaseIterable {
 	/// an unknow error happened
 	case unknown = -1
 	/// the specified file was not found
@@ -34,6 +34,14 @@ public enum SessionError: Int, Error, Codable, Hashable {
 	case duplicate = 111
 	/// the Compute Engine reported an error
 	case compute
+	
+	/// Returns the SessionError for the specified errorCode from the server
+	/// - Parameter errorCode: an errorCode sent by the server
+	/// - returns: the matching SessionError, or .unknown
+	public static func mapping(errorCode: Int) -> SessionError {
+		let matches = SessionError.allCases.compactMap({ $0.rawValue == errorCode ? $0 : nil})
+		return matches.count > 0 ? matches[0] : .unknown
+	}
 }
 
 /// Used when details need to be included with an error
