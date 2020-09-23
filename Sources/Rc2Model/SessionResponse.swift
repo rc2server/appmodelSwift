@@ -363,29 +363,29 @@ public enum SessionResponse: Codable {
 		public let previewId: Int
 		public let fileId: Int
 		public let errorCode: Int
-		public let uniqueIdentifier: String
+		public let updateIdentifier: String
 		
-		public init(previewId: Int, fileId: Int, errorCode: Int = 0, uniqueIdentifier: String) {
+		public init(previewId: Int, fileId: Int, errorCode: Int = 0, updateIdentifier: String) {
 			self.previewId = previewId
 			self.fileId = fileId
 			self.errorCode = errorCode
-			self.uniqueIdentifier = uniqueIdentifier
+			self.updateIdentifier = updateIdentifier
 		}
 	}
 	
 	public struct PreviewUpdateData: Codable, Hashable {
 		public let previewId: Int
 		public let chunkId: Int
-		public let uniqueIdentifier: String
+		public let updateIdentifier: String
 		public let results: String
 		public let updateComplete: Bool
 	
-		public init(previewId: Int, chunkId: Int, uniqueIdentifier: String, results: String, updateComplete: Bool) {
+		public init(previewId: Int, chunkId: Int, updateIdentifier: String, results: String, updateComplete: Bool) {
 			self.previewId = previewId
 			self.chunkId = chunkId
 			self.results = results
 			self.updateComplete = updateComplete
-			self.uniqueIdentifier = uniqueIdentifier
+			self.updateIdentifier = updateIdentifier
 		}
 	}
 }
