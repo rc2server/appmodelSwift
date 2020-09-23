@@ -133,8 +133,8 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 				try container.encode(envId, forKey: .clearEnvironment)
 			case .createEnvironment(let params):
 				try container.encode(params, forKey: .createEnvironment)
-			case .initPreview(let fileId):
-				try container.encode(fileId, forKey: .initPreview)
+			case .initPreview(let params):
+				try container.encode(params, forKey: .initPreview)
 			case .updatePreview(let updateData):
 				try container.encode(updateData, forKey: .updatePreview);
 			case .removePreview(let previewId):
