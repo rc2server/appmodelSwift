@@ -26,7 +26,7 @@ public enum SessionResponse: Codable {
 	case environmentCreated(CreatedEnvironment)
 	/// param is thbe newly created previewId
 	case previewInitialized(PreviewInitedData)
-	case previewUpdate(PreviewUpdateData)
+	case previewUpdated(PreviewUpdateData)
 	
 	private enum CodingKeys: String, CodingKey {
 		case computeStatus
@@ -89,7 +89,7 @@ public enum SessionResponse: Codable {
 		} else if let data = try? container.decode(PreviewInitedData.self, forKey: .previewInitialized) {
 			self = .previewInitialized(data)
 		} else if let data = try? container.decode(PreviewUpdateData.self, forKey: .previewInitialized) {
-			self = .previewUpdate(data)
+			self = .previewUpdated(data)
 		} else {
 			throw SessionError.decoding
 		}
@@ -134,7 +134,7 @@ public enum SessionResponse: Codable {
 			try container.encode(data, forKey: .environmentCreated)
 		case .previewInitialized(let previewId):
 			try container.encode(previewId, forKey: .previewInitialized);
-		case .previewUpdate(let updateData):
+		case .previewUpdated(let updateData):
 			try container.encode(updateData, forKey: .previewUpdate)
 		}
 	}
@@ -428,7 +428,7 @@ extension SessionResponse: CustomStringConvertible {
 			return "compute status update: \(status)"
 		case .environmentCreated(_):
 			return "created environment"
-		case .previewUpdate(let updata):
+		case .previewUpdated(let updata):
 			return "preview \(updata.previewId) update: \(String(updata.chunkId))"
 		case .previewInitialized(let initeeData):
 			return "preview initialized \(initeeData.previewId)"
