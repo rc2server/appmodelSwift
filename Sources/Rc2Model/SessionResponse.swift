@@ -47,7 +47,7 @@ public enum SessionResponse: Codable {
 		case variableValue
 		case environmentCreated
 		case previewInitialized
-		case previewUpdate
+		case previewUpdated
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -135,7 +135,7 @@ public enum SessionResponse: Codable {
 		case .previewInitialized(let previewId):
 			try container.encode(previewId, forKey: .previewInitialized);
 		case .previewUpdated(let updateData):
-			try container.encode(updateData, forKey: .previewUpdate)
+			try container.encode(updateData, forKey: .previewUpdated)
 		}
 	}
 	
