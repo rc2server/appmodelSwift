@@ -9,7 +9,7 @@ let package = Package(
     ],
     dependencies: [
     	.package(url: "https://github.com/apple/swift-log.git", from: "1.1.1"),
-//    	.package(url: "https://github.com/IBM-Swift/HeliumLogger.git", from: "1.9.0"),
+//    	.package(url: "https://github.com/Kitura/HeliumLogger.git", from: "1.9.0"),
 //		 .package(url: "https://github.com/mlilback/MJLLogger.git", .revision("c38f8d6")),
     ],
     targets: [
