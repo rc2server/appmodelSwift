@@ -374,6 +374,13 @@ public enum SessionResponse: Codable {
 	}
 	
 	public struct PreviewUpdateData: Codable, Hashable {
+		private enum CodingKeys: String, CodingKey {
+			case previewId
+			case chunkId
+			case updateIdentifier
+			case updateComplete = "complete"
+			case results = "content"
+		}
 		public let previewId: Int
 		public let chunkId: Int
 		public let updateIdentifier: String
