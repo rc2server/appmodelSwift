@@ -6,6 +6,10 @@
 
 import Foundation
 
+public enum SessionResorationError: String, Error {
+	case failedToDecode
+}
+
 public enum SessionResponse: Codable {
 	case computeStatus(ComputeStatus)
 	case connected(BulkUserInfo)
@@ -91,7 +95,7 @@ public enum SessionResponse: Codable {
 		} else if let data = try? container.decode(PreviewUpdateData.self, forKey: .previewInitialized) {
 			self = .previewUpdated(data)
 		} else {
-			throw SessionError.decoding
+			throw SessionResorationError.failedToDecode
 		}
 	}
 

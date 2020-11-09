@@ -7,17 +7,17 @@
 import Foundation
 
 /// An error returned via REST or WebSocket
-public enum SessionError: Int, Error, Codable, Hashable, CaseIterable {
+public enum SessionError: Error, Codable, Hashable {
 	/// an unknow error happened
-	case unknown = -1
+	case unknown
 	/// the specified file was not found
-	case fileNotFound = 105
+	case fileNotFound
 	/// an attempt to edit a file that has already been changed since the edit started
-	case fileVersionMismatch = -101
+	case fileVersionMismatch
 	/// failed to insert/update/delete from the database
-	case databaseUpdateFailed = -102
+	case databaseUpdateFailed
 	/// failed to open connection to Compute Engine
-	case failedToConnectToCompute = 140
+	case failedToConnectToCompute
 	/// the Compute Engine connection was unexpectedly closed
 	case computeConnectionClosed
 	/// the request , or possibly its arguments, were invalid
@@ -27,20 +27,93 @@ public enum SessionError: Int, Error, Codable, Hashable, CaseIterable {
 	/// user does not have permission
 	case permissionDenied
 	/// an error while encoding to JSON
-	case encoding
+	case encoding(String)
 	/// an error while decoding from JSON
-	case decoding
+	case decoding(String)
 	/// multiple objects met the requested criteria
-	case duplicate = 111
+	case duplicate
 	/// the Compute Engine reported an error
 	case compute
+
+	private enum CodingKeys: CodingKey {
+		case unknown
+		case fileNotFound
+		case fileVersionMismatch
+		case databaseUpdateFailed
+		case failedToConnectToCompute
+		case computeConnectionClosed
+		case invalidRequest
+		case invalidLogin
+		case permissionDenied
+		case encoding
+		case decoding
+		case duplicate
+		case compute
+	}
+
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.container(keyedBy: CodingKeys.self)
+		if let _ = try? container.decode(Bool.self, forKey: .unknown) {
+			self = .unknown
+		} else if let _ = try? container.decode(Bool.self, forKey: .fileNotFound) {
+			self = .fileNotFound
+		} else if let _ = try? container.decode(Bool.self, forKey: .fileVersionMismatch) {
+			self = .fileVersionMismatch
+		} else if let _ = try? container.decode(Bool.self, forKey: .databaseUpdateFailed) {
+			self = .databaseUpdateFailed
+		} else if let _ = try? container.decode(Bool.self, forKey: .failedToConnectToCompute) {
+			self = .failedToConnectToCompute
+		} else if let _ = try? container.decode(Bool.self, forKey: .computeConnectionClosed) {
+			self = .computeConnectionClosed
+		} else if let _ = try? container.decode(Bool.self, forKey: .invalidRequest) {
+			self = .invalidRequest
+		} else if let _ = try? container.decode(Bool.self, forKey: .invalidLogin) {
+			self = .invalidLogin
+		} else if let _ = try? container.decode(Bool.self, forKey: .permissionDenied) {
+			self = .permissionDenied
+		} else if let _ = try? container.decode(Bool.self, forKey: .duplicate) {
+			self = .duplicate
+		} else if let _ = try? container.decode(Bool.self, forKey: .compute) {
+			self = .compute
+		} else if let desc = try? container.decode(String.self, forKey: .encoding) {
+			self = .encoding(desc)
+		} else if let desc = try? container.decode(String.self, forKey: .decoding) {
+			self = .decoding(desc)
+		} else {
+			throw SessionResorationError.failedToDecode
+		}
+	}
 	
-	/// Returns the SessionError for the specified errorCode from the server
-	/// - Parameter errorCode: an errorCode sent by the server
-	/// - returns: the matching SessionError, or .unknown
-	public static func mapping(errorCode: Int) -> SessionError {
-		let matches = SessionError.allCases.compactMap({ $0.rawValue == errorCode ? $0 : nil})
-		return matches.count > 0 ? matches[0] : .unknown
+	public func encode(to encoder: Encoder) throws {
+		var container = encoder.container(keyedBy: CodingKeys.self)
+		switch self {
+		case .unknown:
+			try container.encode(true, forKey: .unknown)
+		case .fileNotFound:
+			try container.encode(true, forKey: .fileNotFound)
+		case .fileVersionMismatch:
+			try container.encode(true, forKey: .fileVersionMismatch)
+		case .databaseUpdateFailed:
+			try container.encode(true, forKey: .databaseUpdateFailed)
+		case .failedToConnectToCompute:
+			try container.encode(true, forKey: .failedToConnectToCompute)
+		case .computeConnectionClosed:
+			try container.encode(true, forKey: .computeConnectionClosed)
+		case .invalidRequest:
+			try container.encode(true, forKey: .invalidRequest)
+		case .invalidLogin:
+			try container.encode(true, forKey: .invalidLogin)
+		case .permissionDenied:
+			try container.encode(true, forKey: .permissionDenied)
+		case .encoding(let str):
+			try container.encode(str, forKey: .encoding)
+		case .decoding(let str):
+			try container.encode(str, forKey: .decoding)
+		case .duplicate:
+			try container.encode(true, forKey: .duplicate)
+		case .compute:
+			try container.encode(true, forKey: .compute)
+		}
 	}
 }
 

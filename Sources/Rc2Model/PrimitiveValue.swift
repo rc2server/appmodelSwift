@@ -45,7 +45,7 @@ public enum PrimitiveValue: Codable, Hashable, CustomStringConvertible {
 		} else if let _ = try? container.decode(Bool.self, forKey: .null) {
 			self = .null
 		} else {
-			throw SessionError.decoding
+			throw SessionError.decoding("invalid data")
 		}
 	}
 	

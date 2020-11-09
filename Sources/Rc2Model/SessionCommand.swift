@@ -105,7 +105,7 @@ public enum SessionCommand: Codable, CustomStringConvertible, Hashable {
 			self = .removePreview(previewId)
 		} else {
 			modelLog.warning("failed to parse a SessionCommand")
-			throw SessionError.decoding
+			throw SessionError.decoding("corrupt data")
 		}
 	}
 	
