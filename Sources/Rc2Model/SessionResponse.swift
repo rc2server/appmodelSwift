@@ -92,7 +92,7 @@ public enum SessionResponse: Codable {
 			self = .environmentCreated(data)
 		} else if let data = try? container.decode(PreviewInitedData.self, forKey: .previewInitialized) {
 			self = .previewInitialized(data)
-		} else if let data = try? container.decode(PreviewUpdateData.self, forKey: .previewInitialized) {
+		} else if let data = try? container.decode(PreviewUpdateData.self, forKey: .previewUpdated) {
 			self = .previewUpdated(data)
 		} else {
 			throw SessionResorationError.failedToDecode
