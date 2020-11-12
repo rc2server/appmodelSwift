@@ -410,6 +410,12 @@ public enum SessionResponse: Codable {
 		public let previewId: Int
 		public let updateIdentifier: String
 		public let activeChunks: [Int]
+
+		public init(previewId: Int, updateIdentifier: String, activeChunks: [Int]) {
+			self.previewId = previewId
+			self.updateIdentifier = updateIdentifier
+			self.activeChunks = activeChunks
+		}
 	}
 }
 
