@@ -31,6 +31,7 @@ public enum SessionResponse: Codable {
 	/// param is thbe newly created previewId
 	case previewInitialized(PreviewInitedData)
 	case previewUpdated(PreviewUpdateData)
+	case previewUpdateStarted(PreviewUpdateStartedData)
 	
 	private enum CodingKeys: String, CodingKey {
 		case computeStatus
@@ -52,6 +53,7 @@ public enum SessionResponse: Codable {
 		case environmentCreated
 		case previewInitialized
 		case previewUpdated
+		case previewUpdateStarted
 	}
 	
 	public init(from decoder: Decoder) throws {
@@ -94,8 +96,10 @@ public enum SessionResponse: Codable {
 			self = .previewInitialized(data)
 		} else if let data = try? container.decode(PreviewUpdateData.self, forKey: .previewUpdated) {
 			self = .previewUpdated(data)
+		} else if let data = try? container.decode(PreviewUpdateStartedData.self, forKey: .previewUpdateStarted) {
+			self = .previewUpdateStarted(data)
 		} else {
-			throw SessionResorationError.failedToDecode
+			throw SessionError.decoding("failed to find correct key in json")
 		}
 	}
 
@@ -140,6 +144,8 @@ public enum SessionResponse: Codable {
 			try container.encode(previewId, forKey: .previewInitialized);
 		case .previewUpdated(let updateData):
 			try container.encode(updateData, forKey: .previewUpdated)
+		case .previewUpdateStarted(let data):
+			try container.encode(data, forKey: .previewUpdateStarted)
 		}
 	}
 	
@@ -399,6 +405,12 @@ public enum SessionResponse: Codable {
 			self.updateIdentifier = updateIdentifier
 		}
 	}
+	
+	public struct PreviewUpdateStartedData: Codable, Hashable {
+		public let previewId: Int
+		public let updateIdentifier: String
+		public let activeChunks: [Int]
+	}
 }
 
 // MARK: - CustomStringConvertible
@@ -443,6 +455,8 @@ extension SessionResponse: CustomStringConvertible {
 			return "preview \(updata.previewId) update: \(String(updata.chunkId))"
 		case .previewInitialized(let initeeData):
 			return "preview initialized \(initeeData.previewId)"
+		case .previewUpdateStarted(let data):
+			return "preview \(data.previewId) started"
 		}
 	}
 }
