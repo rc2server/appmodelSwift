@@ -436,7 +436,7 @@ extension SessionResponse: CustomStringConvertible {
 		case .execComplete(_):
 			return "execute complete"
 		case .fileChanged(let change):
-			return "file \(change.fileId) changed"
+			return "file \(change.fileId) changed v\(change.file?.version ?? -1)"
 		case .fileOperation(let data):
 			return "file operation \(data.operation) \(data.fileIdString)"
 		case .help(let data):
