@@ -12,17 +12,19 @@ public struct Workspace: Codable, Hashable {
 	public let name: String
 	public let userId: Int
 	public let projectId: Int
+	public let rootFileId: Int
 	public let uniqueId: String
 	public let lastAccess: Date
 	public let dateCreated: Date
 
-	public init(id: Int, version: Int, name: String, userId: Int, projectId: Int, uniqueId: String, lastAccess: Date, dateCreated: Date)
+	public init(id: Int, version: Int, name: String, userId: Int, projectId: Int, rootFileId: Int, uniqueId: String, lastAccess: Date, dateCreated: Date)
 	{
 		self.id = id
 		self.version = version
 		self.name = name
 		self.userId = userId
 		self.projectId  = projectId
+		self.rootFileId = rootFileId
 		self.uniqueId = uniqueId
 		self.lastAccess = lastAccess
 		self.dateCreated = dateCreated
